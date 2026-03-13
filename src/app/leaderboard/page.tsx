@@ -1,0 +1,99 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { ArrowLeft, Trophy, Medal, Award } from 'lucide-react';
+import { getAllDegrees } from '@/lib/degrees';
+
+interface LeaderboardEntry {
+  rank: number;
+  userName: string;
+  degreeTitle: string;
+  degreeIcon: string;
+  earnedAt: string;
+}
+
+// Mock leaderboard data - in production, fetch from Supabase
+const mockLeaderboard: LeaderboardEntry[] = [
+  { rank: 1, userName: 'Rahul', degreeTitle: 'Bachelor in Abusing', degreeIcon: '🤬', earnedAt: '2 hours ago' },
+  { rank: 2, userName: 'Alex', degreeTitle: 'Master in Memes', degreeIcon: '🐸', earnedAt: '3 hours ago' },
+  { rank: 3, userName: 'Sarah', degreeTitle: 'Bachelor in Overthinking', degreeIcon: '🤔', earnedAt: '5 hours ago' },
+  { rank: 4, userName: 'Priya', degreeTitle: 'Bachelor in Procrastination', degreeIcon: '⏰', earnedAt: '6 hours ago' },
+  { rank: 5, userName: 'Arjun', degreeTitle: 'Bachelor in Abusing', degreeIcon: '🤬', earnedAt: '8 hours ago' },
+  { rank: 6, userName: 'Neha', degreeTitle: 'Master in Memes', degreeIcon: '🐸', earnedAt: '1 day ago' },
+  { rank: 7, userName: 'Vikram', degreeTitle: 'Bachelor in Overthinking', degreeIcon: '🤔', earnedAt: '1 day ago' },
+  { rank: 8, userName: 'Ananya', degreeTitle: 'Bachelor in Procrastination', degreeIcon: '⏰', earnedAt: '2 days ago' },
+  { rank: 9, userName: 'Rohan', degreeTitle: 'Master in Memes', degreeIcon: '🐸', earnedAt: '2 days ago' },
+  { rank: 10, userName: 'Kavya', degreeTitle: 'Bachelor in Abusing', degreeIcon: '🤬', earnedAt: '3 days ago' },
+];
+
+export default function LeaderboardPage() {
+  const [entries, setEntries] = useState<LeaderboardEntry[]>(mockLeaderboard);
+
+  const getRankIcon = (rank: number) => {
+    if (rank === 1) return <Trophy className="text-yellow-500" size={24} />;
+    if (rank === 2) return <Medal className="text-gray-400" size={24} />;
+    if (rank === 3) return <Award className="text-amber-600" size={24} />;
+    return <span className="text-gray-400 font-bold">{rank}</span>;
+  };
+
+  return (
+    <div className="min-h-screen bg-white">
+      {/* Header */}
+      <header className="border-b border-gray-100 sticky top-0 bg-white/90 backdrop-blur-sm z-10">
+        <div className="max-w-2xl mx-auto px-4 py-4">
+          <Link href="/" className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors">
+            <ArrowLeft size={20} />
+            <span className="text-sm">Back</span>
+          </Link>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="max-w-2xl mx-auto px-4 py-8">
+        <div className="text-center mb-8">
+          <span className="text-5xl mb-4 block">🏆</span>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Top Internet Graduates
+          </h1>
+          <p className="text-gray-600">
+            Today's most certified chaos agents
+          </p>
+        </div>
+
+        {/* Leaderboard List */}
+        <div className="space-y-2">
+          {entries.map((entry, index) => (
+            <div
+              key={entry.rank}
+              className={`flex items-center gap-4 p-4 rounded-xl transition-all ${
+                index < 3 ? 'bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-100' : 'bg-white border border-gray-100'
+              }`}
+            >
+              <div className="w-12 text-center">
+                {getRankIcon(entry.rank)}
+              </div>
+              <div className="text-2xl">{entry.degreeIcon}</div>
+              <div className="flex-1">
+                <h3 className="font-semibold text-gray-900">{entry.userName}</h3>
+                <p className="text-sm text-gray-500">{entry.degreeTitle}</p>
+              </div>
+              <div className="text-sm text-gray-400">{entry.earnedAt}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* CTA */}
+        <div className="mt-8 bg-gray-50 rounded-2xl p-6 text-center">
+          <p className="text-gray-600 mb-4">Want to see your name here?</p>
+          <Link
+            href="/"
+            className="inline-block bg-indigo-600 text-white px-8 py-3 rounded-full font-medium hover:bg-indigo-700 transition-colors"
+          >
+            Get Your Degree →
+          </Link>
+        </div>
+      </main>
+    </div>
+  );
+}
