@@ -193,26 +193,53 @@ export default function Home() {
       {/* Footer */}
       <footer className="border-t border-gray-100 mt-20 bg-white">
         <div className="max-w-6xl mx-auto px-4 py-12">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center">
-                <span className="text-xl">🎓</span>
+          <div className="grid md:grid-cols-3 gap-8 mb-8">
+            {/* Brand */}
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center">
+                  <span className="text-xl">🎓</span>
+                </div>
+                <div>
+                  <p className="font-bold text-gray-900">Internet University</p>
+                  <p className="text-xs text-gray-500">Est. 2026</p>
+                </div>
               </div>
-              <div>
-                <p className="font-bold text-gray-900">Internet University</p>
-                <p className="text-xs text-gray-500">Est. 2026</p>
+              <p className="text-sm text-gray-500">
+                Earn the degree the internet thinks you deserve.
+              </p>
+            </div>
+
+            {/* Contact Info */}
+            <div>
+              <h4 className="font-bold text-gray-900 mb-4">Contact</h4>
+              <p className="text-sm text-gray-600 mb-2">DARSHAN JATINKUMAR PATEL</p>
+              <p className="text-sm text-gray-500 mb-2">
+                C1, Devcity Bunglows, Ghatlodiya,<br />
+                Ahmedabad, Gujarat 380061, India
+              </p>
+              <p className="text-sm text-gray-500">
+                <a href="mailto:djpatel2003119@gmail.com" className="hover:text-indigo-600">djpatel2003119@gmail.com</a>
+              </p>
+              <p className="text-sm text-gray-500">
+                <a href="tel:+916355549958" className="hover:text-indigo-600">+91 63555 49958</a>
+              </p>
+            </div>
+
+            {/* Quick Links */}
+            <div>
+              <h4 className="font-bold text-gray-900 mb-4">Quick Links</h4>
+              <div className="space-y-2 text-sm">
+                <Link href="/" className="block text-gray-600 hover:text-indigo-600">Home</Link>
+                <Link href="/leaderboard" className="block text-gray-600 hover:text-indigo-600">Leaderboard</Link>
+                <Link href="/contact" className="block text-gray-600 hover:text-indigo-600">Contact Us</Link>
               </div>
             </div>
-            <div className="text-center text-gray-500 text-sm">
-              <p>© 2026 Internet University. Not affiliated with any actual university.</p>
-              <p className="mt-1">For entertainment purposes only. No refunds.</p>
-            </div>
-            <div className="flex items-center gap-4 text-2xl">
-              <span>🤬</span>
-              <span>🤔</span>
-              <span>⏰</span>
-              <span>🐸</span>
-            </div>
+          </div>
+
+          <div className="border-t border-gray-100 pt-8 text-center text-sm text-gray-500">
+            <p>© 2026 Internet University. All rights reserved.</p>
+            <p className="mt-2 text-xs">For entertainment purposes only. Not affiliated with any actual university.</p>
           </div>
         </div>
       </footer>

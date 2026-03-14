@@ -3,7 +3,6 @@
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Share2, GraduationCap } from 'lucide-react';
-import { getAllDegrees } from '@/lib/degrees';
 
 // Mock profile data - in production, fetch from Supabase
 const mockProfile = {
@@ -18,11 +17,11 @@ const mockProfile = {
 export default function ProfilePage() {
   const params = useParams();
   const profileName = decodeURIComponent(params.name as string);
-  const degrees = getAllDegrees();
 
   const shareProfile = () => {
-    const text = encodeURIComponent(`Check out ${profileName}'s Internet University profile!`);
-    window.open(`https://wa.me/?text=${text}`, '_blank');
+    const profileUrl = window.location.href;
+    const text = encodeURIComponent(`Check out ${profileName}'s Internet University profile! ${profileUrl}`);
+    window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank', 'noopener,noreferrer');
   };
 
   return (
