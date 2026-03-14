@@ -3,9 +3,15 @@
 import Link from 'next/link';
 import { getAllDegrees } from '@/lib/degrees';
 import { ChevronRight, Star, Trophy, Award, Clock } from 'lucide-react';
+import { track } from '@vercel/analytics';
+import { useEffect } from 'react';
 
 export default function Home() {
   const degrees = getAllDegrees();
+
+  useEffect(() => {
+    track('page_viewed', { page: 'homepage' });
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
@@ -76,6 +82,12 @@ export default function Home() {
             <Link
               key={degree.id}
               href={`/degree/${degree.slug}`}
+              onClick={() => {
+                track('degree_clicked', {
+                  degreeTitle: degree.title,
+                  degreeSlug: degree.slug,
+                });
+              }}
               className="group degree-card block p-8 rounded-3xl relative overflow-hidden"
               style={{ animationDelay: `${index * 100}ms` }}
             >

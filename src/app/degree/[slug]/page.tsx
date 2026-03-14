@@ -8,6 +8,7 @@ import Checklist from '@/components/Checklist';
 import Confetti from '@/components/Confetti';
 import Link from 'next/link';
 import { ArrowLeft, GraduationCap, Sparkles, Trophy, Award, Star } from 'lucide-react';
+import { track } from '@vercel/analytics';
 
 export default function DegreePage() {
   const params = useParams();
@@ -34,6 +35,10 @@ export default function DegreePage() {
   };
 
   const handleClaimDegree = () => {
+    track('degree_started', {
+      degreeTitle: degree.title,
+      degreeSlug: degree.slug,
+    });
     router.push(`/degree/${degree.slug}/name`);
   };
 

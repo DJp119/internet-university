@@ -6,6 +6,7 @@ import { ArrowLeft, CreditCard, Shield } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
+import { track } from '@vercel/analytics';
 
 // Razorpay payment link - replace with your actual payment link
 const RAZORPAY_PAYMENT_LINK = 'https://rzp.io/r/test-payment-link';
@@ -45,15 +46,30 @@ export default function PaymentPage() {
 
       const saveToSupabase = async () => {
         setIsSaving(true);
-        const { error } = await supabase.from('graduates').insert({
+        console.log('Saving to Supabase:', {
           user_name: userName,
           degree_title: degree.title,
-          degree_icon: getDegreeIcon(degree.title),
           certificate_code: certId,
+        });
+
+        const gpa = (3.5 + Math.random() * 0.5).toFixed(2);
+
+        const { data, error } = await supabase.from('certificates').insert({
+          user_name: userName,
+          degree_title: degree.title,
+          certificate_code: certId,
+          gpa: parseFloat(gpa),
         });
 
         if (error) {
           console.error('Error saving to Supabase:', error);
+        } else {
+          console.log('Successfully saved to Supabase:', data);
+          track('degree_completed', {
+            degreeTitle: degree.title,
+            userName,
+            certificateCode: certId,
+          });
         }
         setIsSaving(false);
       };
@@ -156,6 +172,12 @@ export default function PaymentPage() {
                   sessionStorage.setItem('userName', userName);
                   sessionStorage.setItem('degreeTitle', degree.title);
                   sessionStorage.setItem('degreeSubtitle', degree.subtitle);
+                  track('degree_completed', {
+                    degreeTitle: degree.title,
+                    userName,
+                    certificateCode: certId,
+                    demoMode: true,
+                  });
                   router.push(`/certificate/${certId}`);
                 }}
                 className="w-full mt-4 bg-gray-100 text-gray-600 px-8 py-3 rounded-full font-medium hover:bg-gray-200 transition-colors text-sm border-2 border-gray-200"

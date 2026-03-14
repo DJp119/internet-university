@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Trophy, Medal, Award } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import { track } from '@vercel/analytics';
+import { useEffect } from 'react';
 
 interface LeaderboardEntry {
   rank: number;
@@ -38,11 +40,15 @@ export default function LeaderboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    track('page_viewed', { page: 'leaderboard' });
+  }, []);
+
+  useEffect(() => {
     async function fetchLeaderboard() {
       const { data, error } = await supabase
-        .from('graduates')
-        .select('user_name, degree_title, degree_icon, earned_at')
-        .order('earned_at', { ascending: false })
+        .from('certificates')
+        .select('user_name, degree_title, created_at')
+        .order('created_at', { ascending: false })
         .limit(10);
 
       if (error) {
@@ -54,8 +60,8 @@ export default function LeaderboardPage() {
         rank: index + 1,
         userName: entry.user_name,
         degreeTitle: entry.degree_title,
-        degreeIcon: entry.degree_icon || getDegreeIcon(entry.degree_title),
-        earnedAt: formatTimeAgo(entry.earned_at),
+        degreeIcon: getDegreeIcon(entry.degree_title),
+        earnedAt: formatTimeAgo(entry.created_at),
       }));
 
       setEntries(formattedEntries);

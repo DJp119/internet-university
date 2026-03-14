@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Award, Download, Home, Share2 } from 'lucide-react';
 import { downloadCertificatePDF, downloadCertificatePNG } from '@/lib/certificate-generator';
+import { track } from '@vercel/analytics';
 
 function getDegreeIcon(degreeTitle: string) {
   if (degreeTitle.includes('Abusing')) return '🤬';
@@ -84,10 +85,20 @@ export default function CertificatePage() {
           element: certificateRef.current,
           fileName: `${fileNameBase}.png`,
         });
+        track('certificate_downloaded', {
+          type: 'png',
+          degreeTitle,
+          userName,
+        });
       } else {
         await downloadCertificatePDF({
           element: certificateRef.current,
           fileName: `${fileNameBase}.pdf`,
+        });
+        track('certificate_downloaded', {
+          type: 'pdf',
+          degreeTitle,
+          userName,
         });
       }
     } finally {
@@ -264,21 +275,30 @@ export default function CertificatePage() {
           </div>
           <div className="flex flex-wrap gap-3 justify-center">
             <button
-              onClick={() => openShareWindow(shareLinks.x)}
+              onClick={() => {
+                openShareWindow(shareLinks.x);
+                track('certificate_shared', { platform: 'x', degreeTitle });
+              }}
               className="flex items-center gap-2 bg-black text-white px-6 py-3 rounded-full font-medium hover:bg-gray-900 transition-colors shadow-lg"
             >
               <Share2 size={18} />
               X
             </button>
             <button
-              onClick={() => openShareWindow(shareLinks.linkedIn)}
+              onClick={() => {
+                openShareWindow(shareLinks.linkedIn);
+                track('certificate_shared', { platform: 'linkedin', degreeTitle });
+              }}
               className="flex items-center gap-2 bg-[#0A66C2] text-white px-6 py-3 rounded-full font-medium hover:bg-[#0958a9] transition-colors shadow-lg"
             >
               <Share2 size={18} />
               LinkedIn
             </button>
             <button
-              onClick={() => openShareWindow(shareLinks.whatsApp)}
+              onClick={() => {
+                openShareWindow(shareLinks.whatsApp);
+                track('certificate_shared', { platform: 'whatsapp', degreeTitle });
+              }}
               className="flex items-center gap-2 bg-[#25D366] text-white px-6 py-3 rounded-full font-medium hover:bg-[#20b85a] transition-colors shadow-lg"
             >
               <Share2 size={18} />
@@ -287,6 +307,7 @@ export default function CertificatePage() {
             <button
               onClick={() => {
                 navigator.clipboard.writeText(shareUrl);
+                track('certificate_shared', { platform: 'instagram', degreeTitle });
                 alert('Link copied! Paste it on Instagram to share.');
               }}
               className="flex items-center gap-2 bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#F77737] text-white px-6 py-3 rounded-full font-medium hover:opacity-90 transition-opacity shadow-lg"
