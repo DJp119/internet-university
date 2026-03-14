@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Trophy, Medal, Award } from 'lucide-react';
-import { getAllDegrees } from '@/lib/degrees';
+import { supabase } from '@/lib/supabase';
 
 interface LeaderboardEntry {
   rank: number;
@@ -13,22 +13,57 @@ interface LeaderboardEntry {
   earnedAt: string;
 }
 
-// Mock leaderboard data - in production, fetch from Supabase
-const mockLeaderboard: LeaderboardEntry[] = [
-  { rank: 1, userName: 'Rahul', degreeTitle: 'Bachelor in Abusing', degreeIcon: '🤬', earnedAt: '2 hours ago' },
-  { rank: 2, userName: 'Alex', degreeTitle: 'Master in Memes', degreeIcon: '🐸', earnedAt: '3 hours ago' },
-  { rank: 3, userName: 'Sarah', degreeTitle: 'Bachelor in Overthinking', degreeIcon: '🤔', earnedAt: '5 hours ago' },
-  { rank: 4, userName: 'Priya', degreeTitle: 'Bachelor in Procrastination', degreeIcon: '⏰', earnedAt: '6 hours ago' },
-  { rank: 5, userName: 'Arjun', degreeTitle: 'Bachelor in Abusing', degreeIcon: '🤬', earnedAt: '8 hours ago' },
-  { rank: 6, userName: 'Neha', degreeTitle: 'Master in Memes', degreeIcon: '🐸', earnedAt: '1 day ago' },
-  { rank: 7, userName: 'Vikram', degreeTitle: 'Bachelor in Overthinking', degreeIcon: '🤔', earnedAt: '1 day ago' },
-  { rank: 8, userName: 'Ananya', degreeTitle: 'Bachelor in Procrastination', degreeIcon: '⏰', earnedAt: '2 days ago' },
-  { rank: 9, userName: 'Rohan', degreeTitle: 'Master in Memes', degreeIcon: '🐸', earnedAt: '2 days ago' },
-  { rank: 10, userName: 'Kavya', degreeTitle: 'Bachelor in Abusing', degreeIcon: '🤬', earnedAt: '3 days ago' },
-];
+function getDegreeIcon(degreeTitle: string) {
+  if (degreeTitle.includes('Abusing')) return '🤬';
+  if (degreeTitle.includes('Overthinking')) return '🤔';
+  if (degreeTitle.includes('Procrastination')) return '⏰';
+  return '🐸';
+}
+
+function formatTimeAgo(date: string): string {
+  const now = new Date();
+  const earned = new Date(date);
+  const diffMs = now.getTime() - earned.getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMins / 60);
+  const diffDays = Math.floor(diffHours / 24);
+
+  if (diffMins < 60) return `${diffMins} minutes ago`;
+  if (diffHours < 24) return `${diffHours} hours ago`;
+  return `${diffDays} days ago`;
+}
 
 export default function LeaderboardPage() {
-  const [entries, setEntries] = useState<LeaderboardEntry[]>(mockLeaderboard);
+  const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchLeaderboard() {
+      const { data, error } = await supabase
+        .from('graduates')
+        .select('user_name, degree_title, degree_icon, earned_at')
+        .order('earned_at', { ascending: false })
+        .limit(10);
+
+      if (error) {
+        console.error('Error fetching leaderboard:', error);
+        return;
+      }
+
+      const formattedEntries: LeaderboardEntry[] = (data || []).map((entry, index) => ({
+        rank: index + 1,
+        userName: entry.user_name,
+        degreeTitle: entry.degree_title,
+        degreeIcon: entry.degree_icon || getDegreeIcon(entry.degree_title),
+        earnedAt: formatTimeAgo(entry.earned_at),
+      }));
+
+      setEntries(formattedEntries);
+      setLoading(false);
+    }
+
+    fetchLeaderboard();
+  }, []);
 
   const getRankIcon = (rank: number) => {
     if (rank === 1) return <Trophy className="text-yellow-500" size={24} />;

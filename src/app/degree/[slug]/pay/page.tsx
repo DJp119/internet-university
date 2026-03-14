@@ -2,12 +2,20 @@
 
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { getDegreeBySlug } from '@/lib/degrees';
-import { ArrowLeft, CreditCard, Shield, Download, Share2, CheckCircle } from 'lucide-react';
+import { ArrowLeft, CreditCard, Shield } from 'lucide-react';
 import Link from 'next/link';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { supabase } from '@/lib/supabase';
 
 // Razorpay payment link - replace with your actual payment link
 const RAZORPAY_PAYMENT_LINK = 'https://rzp.io/r/test-payment-link';
+
+function getDegreeIcon(degreeTitle: string) {
+  if (degreeTitle.includes('Abusing')) return '🤬';
+  if (degreeTitle.includes('Overthinking')) return '🤔';
+  if (degreeTitle.includes('Procrastination')) return '⏰';
+  return '🐸';
+}
 
 export default function PaymentPage() {
   const params = useParams();
@@ -15,6 +23,7 @@ export default function PaymentPage() {
   const searchParams = useSearchParams();
   const degree = getDegreeBySlug(params.slug as string);
   const userName = searchParams.get('name') || 'Anonymous';
+  const [isSaving, setIsSaving] = useState(false);
 
   if (!degree) {
     return (
@@ -25,18 +34,32 @@ export default function PaymentPage() {
   }
 
   const handlePayment = () => {
-    // In production, this would create a Razorpay order via API
-    // For now, redirect to hosted payment link
     window.location.href = `${RAZORPAY_PAYMENT_LINK}?name=${encodeURIComponent(userName)}&degree=${encodeURIComponent(degree.title)}`;
   };
 
-  // Simulate payment success redirect (for demo)
+  // Save to Supabase after payment success
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('payment_success') === 'true') {
-      // Generate a random certificate ID
       const certId = `CERT-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
-      // Store in session for certificate page
+
+      const saveToSupabase = async () => {
+        setIsSaving(true);
+        const { error } = await supabase.from('graduates').insert({
+          user_name: userName,
+          degree_title: degree.title,
+          degree_icon: getDegreeIcon(degree.title),
+          certificate_code: certId,
+        });
+
+        if (error) {
+          console.error('Error saving to Supabase:', error);
+        }
+        setIsSaving(false);
+      };
+
+      saveToSupabase();
+
       sessionStorage.setItem('certificateId', certId);
       sessionStorage.setItem('userName', userName);
       sessionStorage.setItem('degreeTitle', degree.title);
