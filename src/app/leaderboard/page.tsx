@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ArrowLeft, Trophy, Medal, Award } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { track } from '@vercel/analytics';
+import { useEffect } from 'react';
 
 interface LeaderboardEntry {
   rank: number;
