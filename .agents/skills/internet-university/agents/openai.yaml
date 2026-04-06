@@ -1,0 +1,6 @@
+interface:
+  display_name: "Internet University"
+  short_description: "Repo-specific patterns and workflows for internet-university"
+  default_prompt: "Use the internet-university repo skill to follow existing architecture, testing, and workflow conventions."
+policy:
+  allow_implicit_invocation: true
