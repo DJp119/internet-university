@@ -5,6 +5,7 @@ import { getAllDegrees } from '@/lib/degrees';
 import { ChevronRight, Star, Trophy, Award, Clock, Zap, Share2, Users, TrendingUp, Sparkles, CheckCircle2, ArrowRight, Play } from 'lucide-react';
 import { track } from '@vercel/analytics';
 import { useEffect, useState } from 'react';
+import AdBanner from '@/components/ads/AdBanner';
 
 export default function Home() {
   const degrees = getAllDegrees();
@@ -105,11 +106,11 @@ export default function Home() {
           </div>
           <div className="flex items-center gap-2.5 bg-white px-5 py-3 rounded-2xl shadow-lg border border-[#FECDD3] hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer">
             <div className="w-10 h-10 bg-gradient-to-br from-[#2563EB] to-[#E11D48] rounded-xl flex items-center justify-center">
-              <span className="font-bold text-white">₹10</span>
+              <span className="font-bold text-white">FREE</span>
             </div>
             <div>
-              <div className="font-black text-gray-900">Only ₹10</div>
-              <div className="text-xs text-gray-500">Per degree</div>
+              <div className="font-black text-gray-900">100% Free</div>
+              <div className="text-xs text-gray-500">Ad-supported</div>
             </div>
           </div>
         </div>
@@ -131,6 +132,14 @@ export default function Home() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Ad Placement - After Hero */}
+      <section className="relative max-w-6xl mx-auto px-4 py-8">
+        <div className="bg-white rounded-2xl shadow-lg border border-[#FECDD3] p-4">
+          <p className="text-xs text-gray-400 text-center mb-2">Advertisement</p>
+          <AdBanner slot="1234567890" format="auto" />
         </div>
       </section>
 
@@ -398,6 +407,14 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Ad Placement - Before Footer */}
+      <section className="relative max-w-6xl mx-auto px-4 py-8">
+        <div className="bg-white rounded-2xl shadow-lg border border-[#FECDD3] p-4">
+          <p className="text-xs text-gray-400 text-center mb-2">Advertisement</p>
+          <AdBanner slot="0987654321" format="auto" />
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="relative border-t border-[#FECDD3] bg-white">
         <div className="max-w-6xl mx-auto px-4 py-12">
@@ -460,6 +477,7 @@ export default function Home() {
           <div className="border-t border-[#FECDD3] pt-8 text-center text-sm text-gray-500">
             <p>© 2026 Internet University. All rights reserved.</p>
             <p className="mt-2 text-xs">For entertainment purposes only. Not affiliated with any actual university.</p>
+            <p className="mt-2 text-xs text-gray-400">This site is supported by ads. All degrees are 100% free.</p>
           </div>
         </div>
       </footer>

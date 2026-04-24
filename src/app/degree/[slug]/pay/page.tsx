@@ -2,13 +2,12 @@
 
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { getDegreeBySlug } from '@/lib/degrees';
-import { ArrowLeft, CreditCard, Shield } from 'lucide-react';
+import { ArrowLeft, GraduationCap, Sparkles, Award, Star, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { track } from '@vercel/analytics';
-
-const RAZORPAY_PAYMENT_LINK = 'https://rzp.io/r/test-payment-link';
+import AdBanner from '@/components/ads/AdBanner';
 
 function getDegreeIcon(degreeTitle: string) {
   if (degreeTitle.includes('Abusing')) return '🤬';
@@ -17,13 +16,68 @@ function getDegreeIcon(degreeTitle: string) {
   return '🐸';
 }
 
-export default function PaymentPage() {
+export default function CertificateGenerationPage() {
   const params = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
   const degree = getDegreeBySlug(params.slug as string);
   const userName = searchParams.get('name') || 'Anonymous';
-  const [isSaving, setIsSaving] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(true);
+  const [currentMessage, setCurrentMessage] = useState(0);
+
+  const loadingMessages = [
+    "Verifying your checklist completion...",
+    "Calculating your GPA...",
+    "Printing your diploma...",
+    "Adding official seal...",
+    "Notifying the dean...",
+    "Preparing your certificate...",
+  ];
+
+  useEffect(() => {
+    if (!degree) return;
+
+    // Animate loading messages
+    const messageInterval = setInterval(() => {
+      setCurrentMessage((prev) => (prev + 1) % loadingMessages.length);
+    }, 800);
+
+    // Generate certificate after a short delay
+    const generateTimeout = setTimeout(() => {
+      const certId = `CERT-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+      const gpa = (3.5 + Math.random() * 0.5).toFixed(2);
+
+      // Save to Supabase
+      supabase
+        .from('certificates')
+        .insert({
+          user_name: userName,
+          degree_title: degree.title,
+          certificate_code: certId,
+          gpa: parseFloat(gpa),
+        })
+        .then(() => {
+          track('degree_completed', {
+            degreeTitle: degree.title,
+            userName,
+            certificateCode: certId,
+          });
+        });
+
+      // Store in session and redirect
+      sessionStorage.setItem('certificateId', certId);
+      sessionStorage.setItem('userName', userName);
+      sessionStorage.setItem('degreeTitle', degree.title);
+      sessionStorage.setItem('degreeSubtitle', degree.subtitle);
+
+      router.push(`/certificate/${certId}`);
+    }, 5000);
+
+    return () => {
+      clearInterval(messageInterval);
+      clearTimeout(generateTimeout);
+    };
+  }, [degree, userName, router, loadingMessages.length]);
 
   if (!degree) {
     return (
@@ -33,52 +87,12 @@ export default function PaymentPage() {
     );
   }
 
-  const handlePayment = () => {
-    window.location.href = `${RAZORPAY_PAYMENT_LINK}?name=${encodeURIComponent(userName)}&degree=${encodeURIComponent(degree.title)}`;
-  };
-
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('payment_success') === 'true') {
-      const certId = `CERT-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
-
-      const saveToSupabase = async () => {
-        setIsSaving(true);
-
-        const gpa = (3.5 + Math.random() * 0.5).toFixed(2);
-
-        await supabase.from('certificates').insert({
-          user_name: userName,
-          degree_title: degree.title,
-          certificate_code: certId,
-          gpa: parseFloat(gpa),
-        });
-
-        track('degree_completed', {
-          degreeTitle: degree.title,
-          userName,
-          certificateCode: certId,
-        });
-
-        setIsSaving(false);
-      };
-
-      saveToSupabase();
-
-      sessionStorage.setItem('certificateId', certId);
-      sessionStorage.setItem('userName', userName);
-      sessionStorage.setItem('degreeTitle', degree.title);
-      sessionStorage.setItem('degreeSubtitle', degree.subtitle);
-      router.push(`/certificate/${certId}`);
-    }
-  }, [router, userName, degree]);
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex flex-col">
       {/* Header */}
       <header className="border-b border-gray-100 bg-white/95 backdrop-blur-xl">
         <div className="max-w-5xl mx-auto px-4 py-3">
-          <Link href={`/degree/${degree.slug}/name`} className="inline-flex items-center gap-2 text-gray-600 hover:text-indigo-600 transition-colors">
+          <Link href={`/degree/${degree.slug}`} className="inline-flex items-center gap-2 text-gray-600 hover:text-indigo-600 transition-colors">
             <ArrowLeft size={20} />
             <span className="text-sm font-medium">Back</span>
           </Link>
@@ -89,36 +103,54 @@ export default function PaymentPage() {
       <main className="flex-1 flex flex-col items-center justify-center px-4 py-12">
         <div className="max-w-md w-full">
           {/* Main Card */}
-          <div className="relative bg-white rounded-3xl shadow-2xl border border-indigo-100 overflow-hidden slide-up">
+          <div className="relative bg-white rounded-3xl shadow-2xl border border-indigo-100 overflow-hidden">
             {/* Decorative Elements */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-100 to-emerald-100 rounded-full -translate-x-16 -translate-y-16 opacity-50"></div>
 
             <div className="relative p-8">
               {/* Icon */}
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl mb-6 shadow-xl">
-                <CreditCard className="text-white" size={28} />
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl mb-6 shadow-xl animate-bounce">
+                <GraduationCap className="text-white" size={28} />
               </div>
 
               {/* Header */}
               <h1 className="text-2xl font-black text-gray-900 mb-2">
-                Get Your Official Certificate
+                🎉 Congratulations!
               </h1>
               <p className="text-gray-600 mb-6">
-                To issue your official <span className="font-bold text-indigo-600">{degree.title}</span> certificate.
+                Your official <span className="font-bold text-indigo-600">{degree.title}</span> certificate is being generated!
               </p>
 
-              {/* Price Badge */}
+              {/* Loading Animation */}
               <div className="relative mb-6">
                 <div className="absolute inset-0 bg-gradient-to-r from-green-400 to-emerald-500 blur-xl opacity-20"></div>
                 <div className="relative bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl p-6 text-white text-center">
-                  <p className="text-green-100 text-sm mb-1">Certificate Fee</p>
-                  <p className="text-5xl font-black">₹10</p>
-                  <p className="text-green-100 text-xs mt-2">one-time payment</p>
+                  <div className="flex items-center justify-center gap-2 mb-3">
+                    <Award className="text-white" size={24} />
+                    <span className="text-lg font-bold">FREE Certificate</span>
+                  </div>
+                  <div className="text-5xl font-black mb-2">₹0</div>
+                  <p className="text-green-100 text-sm">You saved ₹10!</p>
+
+                  {/* Progress Bar */}
+                  <div className="mt-4 bg-green-800/30 rounded-full h-2 overflow-hidden">
+                    <div className="h-full bg-white rounded-full animate-progress" style={{ width: '70%' }} />
+                  </div>
+                </div>
+              </div>
+
+              {/* Loading Messages */}
+              <div className="bg-indigo-50 rounded-xl p-4 mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 bg-indigo-600 rounded-full animate-ping"></div>
+                  <span className="text-sm font-medium text-indigo-700">
+                    {loadingMessages[currentMessage]}
+                  </span>
                 </div>
               </div>
 
               {/* Features */}
-              <div className="space-y-3 mb-8">
+              <div className="space-y-3 mb-6">
                 {[
                   { icon: '✓', text: 'Official certificate with your name', color: 'text-green-600' },
                   { icon: '✓', text: 'Downloadable PNG & PDF formats', color: 'text-purple-600' },
@@ -138,58 +170,39 @@ export default function PaymentPage() {
                 ))}
               </div>
 
-              {/* Payment Button */}
-              <button
-                onClick={handlePayment}
-                className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:from-green-700 hover:to-emerald-700 transition-all shadow-xl hover:shadow-2xl transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3 cta-button"
-              >
-                <Shield size={20} />
-                Pay ₹10 via Razorpay →
-              </button>
-
               {/* Security Badge */}
-              <div className="flex items-center justify-center gap-2 mt-4 text-xs text-gray-400">
-                <Shield size={14} />
-                <span>Secure payment powered by Razorpay</span>
+              <div className="flex items-center justify-center gap-2 text-xs text-gray-400">
+                <Star size={14} />
+                <span>Official Internet University Certificate</span>
               </div>
-
-              {/* Demo Button */}
-              <button
-                onClick={() => {
-                  const certId = `CERT-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
-                  sessionStorage.setItem('certificateId', certId);
-                  sessionStorage.setItem('userName', userName);
-                  sessionStorage.setItem('degreeTitle', degree.title);
-                  sessionStorage.setItem('degreeSubtitle', degree.subtitle);
-                  track('degree_completed', {
-                    degreeTitle: degree.title,
-                    userName,
-                    certificateCode: certId,
-                    demoMode: true,
-                  });
-                  router.push(`/certificate/${certId}`);
-                }}
-                className="w-full mt-4 bg-gray-100 text-gray-600 px-8 py-3 rounded-full font-medium hover:bg-gray-200 transition-colors text-sm border-2 border-gray-200"
-              >
-                🧪 Skip Payment (Demo Mode)
-              </button>
             </div>
           </div>
 
-          {/* Guarantee Card */}
-          <div className="mt-6 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl p-6 text-white slide-up" style={{ animationDelay: '100ms' }}>
-            <div className="flex items-start gap-4">
-              <div className="text-3xl">🎯</div>
-              <div>
-                <h3 className="font-bold mb-1">100% Satisfaction Guaranteed</h3>
-                <p className="text-indigo-100 text-sm leading-relaxed">
-                  Just kidding. No refunds. But you'll love your certificate!
-                </p>
-              </div>
-            </div>
+          {/* Ad Placement */}
+          <div className="mt-6 bg-white rounded-2xl shadow-lg border border-gray-200 p-4">
+            <p className="text-xs text-gray-400 text-center mb-2">Advertisement</p>
+            <AdBanner slot="1122334455" format="fluid" />
           </div>
         </div>
       </main>
+
+      {/* Footer */}
+      <footer className="border-t border-gray-100 bg-white">
+        <div className="max-w-5xl mx-auto px-4 py-6 text-center text-gray-500 text-sm">
+          <p className="font-medium">© 2026 Internet University</p>
+          <p className="mt-1">Not affiliated with any actual university. For entertainment purposes only.</p>
+        </div>
+      </footer>
+
+      <style jsx>{`
+        @keyframes progress {
+          0% { width: 0%; }
+          100% { width: 100%; }
+        }
+        .animate-progress {
+          animation: progress 5s ease-in-out;
+        }
+      `}</style>
     </div>
   );
 }

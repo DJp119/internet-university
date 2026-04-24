@@ -14,7 +14,8 @@
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3003/legal)",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3003/legal/terms)",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3003/legal/privacy)",
-      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3003/legal/refund)"
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3003/legal/refund)",
+      "WebFetch(domain:internetuni.netlify.app)"
     ]
   },
   "enabledPlugins": {

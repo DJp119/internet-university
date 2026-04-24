@@ -606,3 +606,34 @@ body {
   white-space: nowrap;
   border-width: 0;
 }
+
+/* ===== ADSENSE STYLES ===== */
+.ad-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100px;
+}
+
+.ad-container ins.adsbygoogle {
+  display: block;
+  margin: 0 auto;
+}
+
+/* Ad label styling */
+.ad-label {
+  font-size: 0.625rem;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+/* Responsive ad adjustments */
+@media (max-width: 640px) {
+  .ad-container {
+    min-height: 50px;
+  }
+}

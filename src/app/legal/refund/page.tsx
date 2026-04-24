@@ -7,23 +7,23 @@ import { useEffect } from 'react';
 
 const refundInfo = [
   {
-    icon: AlertCircle,
-    title: 'Digital Products',
-    content: 'Since our degrees and certificates are digital products delivered instantly, we generally do not offer refunds once the product has been accessed.',
-    color: 'from-orange-500 to-red-500',
-    type: 'notice',
-  },
-  {
     icon: CheckCircle2,
-    title: 'Refund Eligibility',
-    content: 'Refunds may be considered in cases of technical issues, duplicate purchases, or if you have not accessed your degree/certificate.',
+    title: '100% Free Service',
+    content: 'All degrees and certificates at Internet University are completely free. We do not charge any fees - our service is supported by ads.',
     color: 'from-green-500 to-emerald-500',
     type: 'eligible',
   },
   {
+    icon: AlertCircle,
+    title: 'Technical Issues',
+    content: 'If you experience any technical issues with your certificate, contact us and we will resolve the problem or provide assistance.',
+    color: 'from-orange-500 to-red-500',
+    type: 'notice',
+  },
+  {
     icon: XCircle,
-    title: 'Non-Refundable',
-    content: 'Purchases where the degree checklist has been viewed or the certificate has been downloaded are typically not eligible for refunds.',
+    title: 'No Payment Required',
+    content: 'You should never be asked to pay for any degree or certificate. If someone requests payment, please report it to us immediately.',
     color: 'from-gray-500 to-gray-700',
     type: 'not-eligible',
   },
@@ -33,21 +33,21 @@ const processSteps = [
   {
     step: '1',
     title: 'Contact Us',
-    desc: 'Email us at djpatel2003119@gmail.com with your order details and reason for refund request.',
+    desc: 'Email us at djpatel2003119@gmail.com with your issue and we will get back to you.',
     icon: Mail,
     color: 'from-[#E11D48] to-[#FB7185]',
   },
   {
     step: '2',
     title: 'Review',
-    desc: 'Our team will review your request within 2-3 business days and may request additional information.',
+    desc: 'Our team will review your request within 2-3 business days and respond.',
     icon: FileCheck,
     color: 'from-[#2563EB] to-[#E11D48]',
   },
   {
     step: '3',
-    title: 'Decision',
-    desc: 'You will be notified of the decision via email. If approved, refunds are processed within 5-7 business days.',
+    title: 'Resolution',
+    desc: 'We will resolve your issue or provide assistance as needed.',
     icon: CheckCircle2,
     color: 'from-[#FB7185] to-[#2563EB]',
   },
@@ -55,20 +55,20 @@ const processSteps = [
 
 const faqs = [
   {
-    question: 'How long do I have to request a refund?',
-    answer: 'We recommend requesting refunds within 7 days of purchase. However, we understand that technical issues may arise later, so we consider each case individually.',
+    question: 'Is this really free?',
+    answer: 'Yes! All degrees and certificates are 100% free. We show ads on the site to cover our costs, so you never need to pay anything.',
   },
   {
-    question: 'What if I accidentally purchased the wrong degree?',
-    answer: 'Contact us immediately before accessing the degree. If you haven\'t viewed the checklist or downloaded the certificate, we can often help with a refund or exchange.',
+    question: 'What if I experience technical issues?',
+    answer: 'Contact us immediately and we will help resolve any issues. We want everyone to be able to get their certificate without problems.',
   },
   {
     question: 'Can I exchange my degree for a different one?',
-    answer: 'Yes! If you haven\'t completed your current degree, we may be able to exchange it for a different one of equal value. Contact us for assistance.',
+    answer: 'Yes! You can earn as many degrees as you want, all for free. Just browse our collection and start a new degree anytime.',
   },
   {
     question: 'What if the website is not working?',
-    answer: 'If technical issues prevent you from accessing your purchase, contact us and we\'ll resolve the issue or provide a refund if we can\'t fix it promptly.',
+    answer: 'If technical issues prevent you from accessing the site, contact us and we\'ll resolve the issue as quickly as possible.',
   },
 ];
 
@@ -164,9 +164,9 @@ export default function RefundPage() {
       <section className="relative max-w-4xl mx-auto px-4 pb-16">
         <div className="text-center mb-10">
           <h2 className="text-3xl sm:text-4xl font-black text-gray-900 mb-3">
-            How to Request a Refund
+            Contact Us for Support
           </h2>
-          <p className="text-gray-600 text-lg">Simple 3-step process</p>
+          <p className="text-gray-600 text-lg">We're here to help</p>
         </div>
 
         <div className="grid sm:grid-cols-3 gap-6">
@@ -211,7 +211,7 @@ export default function RefundPage() {
             {[
               { time: 'Within 24 hours', event: 'Acknowledgment email sent', color: 'bg-green-500' },
               { time: '2-3 business days', event: 'Review and decision', color: 'bg-blue-500' },
-              { time: '5-7 business days', event: 'Refund processed to original payment method', color: 'bg-purple-500' },
+              { time: 'Within 24 hours', event: 'We respond to your inquiry', color: 'bg-green-500' },
             ].map((item, idx) => (
               <div key={idx} className="flex items-center gap-4">
                 <div className={`w-3 h-3 ${item.color} rounded-full flex-shrink-0`} />
@@ -281,8 +281,12 @@ export default function RefundPage() {
       <footer className="relative border-t border-[#FECDD3] bg-white">
         <div className="max-w-6xl mx-auto px-4 py-8">
           <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-gray-600">
+            <Link href="/" className="hover:text-[#E11D48] transition-colors cursor-pointer font-medium">
+              Home
+            </Link>
+            <span className="text-gray-300">•</span>
             <Link href="/pricing" className="hover:text-[#E11D48] transition-colors cursor-pointer">
-              Pricing
+              How It Works
             </Link>
             <span className="text-gray-300">•</span>
             <Link href="/legal" className="hover:text-[#E11D48] transition-colors cursor-pointer font-medium">
@@ -295,6 +299,9 @@ export default function RefundPage() {
           </div>
           <p className="text-center text-xs text-gray-500 mt-4">
             © 2026 Internet University. For entertainment purposes only.
+          </p>
+          <p className="text-center text-xs text-gray-400 mt-2">
+            This site is supported by ads. All degrees are 100% free.
           </p>
         </div>
       </footer>

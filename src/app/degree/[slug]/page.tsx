@@ -151,7 +151,7 @@ export default function DegreePage() {
                 Claim Your Degree →
               </button>
               <p className="text-sm text-gray-500 mt-4">
-                Takes 2 minutes • ₹10 only
+                Takes 2 minutes • 100% Free
               </p>
             </div>
           </div>

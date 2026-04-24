@@ -23,7 +23,13 @@ export default function NamePage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (name.trim().length < 2) return;
-    router.push(`/degree/${degree.slug}/pay?name=${encodeURIComponent(name.trim())}`);
+    // Generate certificate directly - no payment required
+    const certId = `CERT-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+    sessionStorage.setItem('certificateId', certId);
+    sessionStorage.setItem('userName', name.trim());
+    sessionStorage.setItem('degreeTitle', degree.title);
+    sessionStorage.setItem('degreeSubtitle', degree.subtitle);
+    router.push(`/certificate/${certId}`);
   };
 
   return (

@@ -107,7 +107,11 @@ const sections = [
       },
       {
         heading: 'Third-Party Cookies',
-        text: 'We use Vercel Analytics to understand website usage. These services may set their own cookies.',
+        text: 'We use Vercel Analytics to understand website usage. We also use Google AdSense to display ads, which may set their own cookies for ad personalization and measurement.',
+      },
+      {
+        heading: 'Advertising',
+        text: 'We display ads through Google AdSense to keep our services free. Google may use cookies and web beacons to serve relevant ads. You can opt-out of personalized advertising through Google Ads Settings.',
       },
       {
         heading: 'Your Choices',
@@ -304,8 +308,12 @@ export default function PrivacyPage() {
       <footer className="relative border-t border-[#FECDD3] bg-white">
         <div className="max-w-6xl mx-auto px-4 py-8">
           <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-gray-600">
+            <Link href="/" className="hover:text-[#E11D48] transition-colors cursor-pointer font-medium">
+              Home
+            </Link>
+            <span className="text-gray-300">•</span>
             <Link href="/pricing" className="hover:text-[#E11D48] transition-colors cursor-pointer">
-              Pricing
+              How It Works
             </Link>
             <span className="text-gray-300">•</span>
             <Link href="/legal" className="hover:text-[#E11D48] transition-colors cursor-pointer font-medium">

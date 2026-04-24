@@ -6,6 +6,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Award, Download, Home, Share2 } from 'lucide-react';
 import { downloadCertificatePDF, downloadCertificatePNG } from '@/lib/certificate-generator';
 import { track } from '@vercel/analytics';
+import AdBanner from '@/components/ads/AdBanner';
 
 function getDegreeIcon(degreeTitle: string) {
   if (degreeTitle.includes('Abusing')) return '🤬';
@@ -261,6 +262,14 @@ export default function CertificatePage() {
             <Download size={22} />
             {isDownloading ? 'Generating...' : 'Download PDF'}
           </button>
+        </div>
+
+        {/* Ad Placement - Below Download Buttons */}
+        <div className="mb-10 slide-up" style={{ animationDelay: '250ms' }}>
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-4">
+            <p className="text-xs text-gray-400 text-center mb-2">Advertisement</p>
+            <AdBanner slot="5544332211" format="auto" />
+          </div>
         </div>
 
         <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-8 slide-up" style={{ animationDelay: '300ms' }}>

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { Home, Mail, Phone, MapPin, User } from 'lucide-react';
+import AdBanner from '@/components/ads/AdBanner';
 
 export default function ContactPage() {
   return (
@@ -111,6 +112,12 @@ export default function ContactPage() {
               </div>
             </div>
 
+            {/* Ad Placement */}
+            <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-4 slide-up" style={{ animationDelay: '150ms' }}>
+              <p className="text-xs text-gray-400 text-center mb-2">Advertisement</p>
+              <AdBanner slot="9988776655" format="auto" />
+            </div>
+
             <div className="bg-gradient-to-br from-indigo-600 via-purple-600 to-indigo-600 rounded-3xl shadow-xl p-8 text-white slide-up" style={{ animationDelay: '200ms' }}>
               <div className="text-5xl mb-4">🔥</div>
               <h3 className="text-xl font-bold mb-2">Join 10,000+ Graduates</h3>
@@ -173,6 +180,7 @@ export default function ContactPage() {
           <div className="border-t border-gray-100 pt-8 text-center text-sm text-gray-500">
             <p>© 2026 Internet University. All rights reserved.</p>
             <p className="mt-2 text-xs">For entertainment purposes only. Not affiliated with any actual university.</p>
+            <p className="mt-2 text-xs text-gray-400">This site is supported by ads. All degrees are 100% free.</p>
           </div>
         </div>
       </footer>
