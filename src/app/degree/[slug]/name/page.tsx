@@ -29,8 +29,8 @@ export default function NamePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex flex-col">
       {/* Header */}
-      <header className="border-b border-gray-100 bg-white/80 backdrop-blur-lg">
-        <div className="max-w-2xl mx-auto px-4 py-4">
+      <header className="border-b border-gray-100 bg-white/95 backdrop-blur-xl">
+        <div className="max-w-5xl mx-auto px-4 py-3">
           <Link href={`/degree/${degree.slug}`} className="inline-flex items-center gap-2 text-gray-600 hover:text-indigo-600 transition-colors">
             <ArrowLeft size={20} />
             <span className="text-sm font-medium">Back</span>
@@ -47,14 +47,14 @@ export default function NamePage() {
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-full -translate-x-16 -translate-y-16 opacity-50"></div>
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-purple-100 to-pink-100 rounded-full translate-x-12 translate-y-12 opacity-50"></div>
 
-            <div className="relative p-8 md:p-10">
+            <div className="relative p-8">
               {/* Icon */}
               <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl mb-6 shadow-xl">
                 <PenTool className="text-white" size={28} />
               </div>
 
               {/* Header */}
-              <h1 className="text-3xl font-black text-gray-900 mb-3">
+              <h1 className="text-2xl font-black text-gray-900 mb-3">
                 Enter Your Name
               </h1>
               <p className="text-gray-600 mb-8 leading-relaxed">
@@ -68,11 +68,10 @@ export default function NamePage() {
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Enter the name to appear on your degree"
+                    placeholder="Enter your name for the certificate"
                     className="w-full px-5 py-4 border-2 border-gray-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 text-lg transition-all placeholder:text-gray-400"
                     autoFocus
                     maxLength={50}
-                    style={{ fontSize: '18px' }}
                   />
                   {name.length > 0 && (
                     <div className="absolute right-4 top-1/2 -translate-y-1/2 text-green-500">
@@ -84,7 +83,7 @@ export default function NamePage() {
                 <button
                   type="submit"
                   disabled={name.trim().length < 2}
-                  className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:from-indigo-700 hover:to-purple-700 transition-all shadow-xl hover:shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none transform hover:scale-[1.02] active:scale-[0.98]"
+                  className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:from-indigo-700 hover:to-purple-700 transition-all shadow-xl hover:shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none transform hover:scale-[1.02] active:scale-[0.98] cta-button"
                 >
                   Continue →
                 </button>

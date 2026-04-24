@@ -8,7 +8,6 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { track } from '@vercel/analytics';
 
-// Razorpay payment link - replace with your actual payment link
 const RAZORPAY_PAYMENT_LINK = 'https://rzp.io/r/test-payment-link';
 
 function getDegreeIcon(degreeTitle: string) {
@@ -38,7 +37,6 @@ export default function PaymentPage() {
     window.location.href = `${RAZORPAY_PAYMENT_LINK}?name=${encodeURIComponent(userName)}&degree=${encodeURIComponent(degree.title)}`;
   };
 
-  // Save to Supabase after payment success
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('payment_success') === 'true') {
@@ -46,31 +44,22 @@ export default function PaymentPage() {
 
       const saveToSupabase = async () => {
         setIsSaving(true);
-        console.log('Saving to Supabase:', {
-          user_name: userName,
-          degree_title: degree.title,
-          certificate_code: certId,
-        });
 
         const gpa = (3.5 + Math.random() * 0.5).toFixed(2);
 
-        const { data, error } = await supabase.from('certificates').insert({
+        await supabase.from('certificates').insert({
           user_name: userName,
           degree_title: degree.title,
           certificate_code: certId,
           gpa: parseFloat(gpa),
         });
 
-        if (error) {
-          console.error('Error saving to Supabase:', error);
-        } else {
-          console.log('Successfully saved to Supabase:', data);
-          track('degree_completed', {
-            degreeTitle: degree.title,
-            userName,
-            certificateCode: certId,
-          });
-        }
+        track('degree_completed', {
+          degreeTitle: degree.title,
+          userName,
+          certificateCode: certId,
+        });
+
         setIsSaving(false);
       };
 
@@ -82,13 +71,13 @@ export default function PaymentPage() {
       sessionStorage.setItem('degreeSubtitle', degree.subtitle);
       router.push(`/certificate/${certId}`);
     }
-  }, [router, userName, degree, params.slug]);
+  }, [router, userName, degree]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex flex-col">
       {/* Header */}
-      <header className="border-b border-gray-100 bg-white/80 backdrop-blur-lg">
-        <div className="max-w-2xl mx-auto px-4 py-4">
+      <header className="border-b border-gray-100 bg-white/95 backdrop-blur-xl">
+        <div className="max-w-5xl mx-auto px-4 py-3">
           <Link href={`/degree/${degree.slug}/name`} className="inline-flex items-center gap-2 text-gray-600 hover:text-indigo-600 transition-colors">
             <ArrowLeft size={20} />
             <span className="text-sm font-medium">Back</span>
@@ -104,7 +93,7 @@ export default function PaymentPage() {
             {/* Decorative Elements */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-100 to-emerald-100 rounded-full -translate-x-16 -translate-y-16 opacity-50"></div>
 
-            <div className="relative p-8 md:p-10">
+            <div className="relative p-8">
               {/* Icon */}
               <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl mb-6 shadow-xl">
                 <CreditCard className="text-white" size={28} />
@@ -114,7 +103,7 @@ export default function PaymentPage() {
               <h1 className="text-2xl font-black text-gray-900 mb-2">
                 Get Your Official Certificate
               </h1>
-              <p className="text-gray-600 mb-8">
+              <p className="text-gray-600 mb-6">
                 To issue your official <span className="font-bold text-indigo-600">{degree.title}</span> certificate.
               </p>
 
@@ -152,7 +141,7 @@ export default function PaymentPage() {
               {/* Payment Button */}
               <button
                 onClick={handlePayment}
-                className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:from-green-700 hover:to-emerald-700 transition-all shadow-xl hover:shadow-2xl transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3"
+                className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:from-green-700 hover:to-emerald-700 transition-all shadow-xl hover:shadow-2xl transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3 cta-button"
               >
                 <Shield size={20} />
                 Pay ₹10 via Razorpay →

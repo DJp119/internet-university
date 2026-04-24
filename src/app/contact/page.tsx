@@ -7,8 +7,8 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
       {/* Header */}
-      <header className="border-b border-gray-100 bg-white/80 backdrop-blur-lg sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 py-4">
+      <header className="border-b border-gray-100 bg-white/95 backdrop-blur-xl sticky top-0 z-50">
+        <div className="max-w-5xl mx-auto px-4 py-3">
           <Link href="/" className="inline-flex items-center gap-3 group">
             <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
               <span className="text-xl">🎓</span>
@@ -21,7 +21,7 @@ export default function ContactPage() {
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 py-16">
+      <main className="max-w-5xl mx-auto px-4 py-16">
         <div className="text-center mb-12 slide-up">
           <h1 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">
             Contact Us
@@ -125,7 +125,7 @@ export default function ContactPage() {
 
       {/* Footer */}
       <footer className="border-t border-gray-200 mt-16 bg-white">
-        <div className="max-w-6xl mx-auto px-4 py-12">
+        <div className="max-w-5xl mx-auto px-4 py-12">
           <div className="grid md:grid-cols-3 gap-8 mb-8">
             {/* Brand */}
             <div>

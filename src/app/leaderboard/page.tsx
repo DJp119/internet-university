@@ -80,8 +80,8 @@ export default function LeaderboardPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="border-b border-gray-100 sticky top-0 bg-white/90 backdrop-blur-sm z-10">
-        <div className="max-w-2xl mx-auto px-4 py-4">
+      <header className="border-b border-gray-100 sticky top-0 bg-white/95 backdrop-blur-xl z-10">
+        <div className="max-w-5xl mx-auto px-4 py-3">
           <Link href="/" className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors">
             <ArrowLeft size={20} />
             <span className="text-sm">Back</span>
@@ -90,7 +90,7 @@ export default function LeaderboardPage() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-2xl mx-auto px-4 py-8">
+      <main className="max-w-5xl mx-auto px-4 py-8">
         <div className="text-center mb-8">
           <span className="text-5xl mb-4 block">🏆</span>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">

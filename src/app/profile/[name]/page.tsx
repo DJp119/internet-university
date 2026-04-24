@@ -4,7 +4,6 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Share2, GraduationCap } from 'lucide-react';
 
-// Mock profile data - in production, fetch from Supabase
 const mockProfile = {
   name: 'Darshan Patel',
   degrees: [
@@ -28,7 +27,7 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-white">
       {/* Header */}
       <header className="border-b border-gray-100">
-        <div className="max-w-2xl mx-auto px-4 py-4">
+        <div className="max-w-5xl mx-auto px-4 py-3">
           <Link href="/" className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors">
             <ArrowLeft size={20} />
             <span className="text-sm">Back</span>
@@ -37,10 +36,10 @@ export default function ProfilePage() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-2xl mx-auto px-4 py-8">
+      <main className="max-w-5xl mx-auto px-4 py-8">
         {/* Profile Header */}
         <div className="text-center mb-8">
-          <div className="w-24 h-24 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl">
+          <div className="w-24 h-24 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl shadow-lg">
             {profileName.charAt(0).toUpperCase()}
           </div>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">{profileName}</h1>
@@ -78,7 +77,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Stats */}
-        <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl p-6 text-white text-center">
+        <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl p-6 text-white text-center shadow-xl">
           <div className="text-4xl font-bold mb-2">{mockProfile.degrees.length}</div>
           <p className="text-indigo-100">Total Degrees</p>
           <p className="text-sm text-indigo-200 mt-4">

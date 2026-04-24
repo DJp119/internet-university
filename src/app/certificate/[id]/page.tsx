@@ -112,14 +112,14 @@ export default function CertificatePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50 py-8">
-      <header className="max-w-6xl mx-auto px-4 mb-6">
+      <header className="max-w-5xl mx-auto px-4 mb-6">
         <Link href="/" className="inline-flex items-center gap-2 text-gray-600 hover:text-indigo-600 transition-colors">
           <Home size={20} />
           <span className="text-sm font-medium">Back to Home</span>
         </Link>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4">
+      <main className="max-w-5xl mx-auto px-4">
         <div className="text-center mb-10 slide-up">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full mb-6 shadow-xl">
             <Award className="text-white" size={40} />
@@ -320,7 +320,7 @@ export default function CertificatePage() {
       </main>
 
       <footer className="border-t border-gray-200 mt-16 bg-white">
-        <div className="max-w-6xl mx-auto px-4 py-12">
+        <div className="max-w-5xl mx-auto px-4 py-12">
           <div className="grid md:grid-cols-3 gap-8 mb-8">
             {/* Brand */}
             <div>
