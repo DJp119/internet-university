@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Award, Download, Home, Share2 } from 'lucide-react';
+import { Award, Download, Home, Share2, Heart } from 'lucide-react';
 import { downloadCertificatePDF, downloadCertificatePNG } from '@/lib/certificate-generator';
 import { track } from '@vercel/analytics';
 import AdBanner from '@/components/ads/AdBanner';
@@ -114,10 +114,16 @@ export default function CertificatePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50 py-8">
       <header className="max-w-5xl mx-auto px-4 mb-6">
-        <Link href="/" className="inline-flex items-center gap-2 text-gray-600 hover:text-indigo-600 transition-colors">
-          <Home size={20} />
-          <span className="text-sm font-medium">Back to Home</span>
-        </Link>
+        <div className="flex items-center gap-4">
+          <Link href="/" className="inline-flex items-center gap-2 text-gray-600 hover:text-indigo-600 transition-colors">
+            <Home size={20} />
+            <span className="text-sm font-medium">Home</span>
+          </Link>
+          <Link href="/donate" className="inline-flex items-center gap-2 text-gray-600 hover:text-indigo-600 transition-colors">
+            <Heart size={16} />
+            <span className="text-sm font-medium">Donate</span>
+          </Link>
+        </div>
       </header>
 
       <main className="max-w-5xl mx-auto px-4">
@@ -368,6 +374,7 @@ export default function CertificatePage() {
               <h4 className="font-bold text-gray-900 mb-4">Quick Links</h4>
               <div className="space-y-2 text-sm">
                 <Link href="/" className="block text-gray-600 hover:text-indigo-600">Home</Link>
+                <Link href="/donate" className="block text-gray-600 hover:text-indigo-600">Donate</Link>
                 <Link href="/leaderboard" className="block text-gray-600 hover:text-indigo-600">Leaderboard</Link>
                 <Link href="/contact" className="block text-gray-600 hover:text-indigo-600">Contact Us</Link>
               </div>

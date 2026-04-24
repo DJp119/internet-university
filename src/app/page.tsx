@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { getAllDegrees } from '@/lib/degrees';
-import { ChevronRight, Star, Trophy, Award, Clock, Zap, Share2, Users, TrendingUp, Sparkles, CheckCircle2, ArrowRight, Play } from 'lucide-react';
+import { ChevronRight, Star, Trophy, Award, Clock, Zap, Share2, Users, TrendingUp, Sparkles, CheckCircle2, ArrowRight, Play, Heart } from 'lucide-react';
 import { track } from '@vercel/analytics';
 import { useEffect, useState } from 'react';
 import AdBanner from '@/components/ads/AdBanner';
@@ -47,6 +47,13 @@ export default function Home() {
               </div>
             </Link>
             <div className="flex items-center gap-2">
+              <Link
+                href="/donate"
+                className="hidden sm:flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-[#E11D48] transition-colors bg-gray-100 hover:bg-pink-100 px-4 py-2 rounded-full cursor-pointer"
+              >
+                <Heart size={16} />
+                <span>Donate</span>
+              </Link>
               <Link
                 href="/leaderboard"
                 className="hidden sm:flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-[#E11D48] transition-colors bg-gray-100 hover:bg-pink-100 px-4 py-2 rounded-full cursor-pointer"
@@ -456,7 +463,8 @@ export default function Home() {
               <h4 className="font-bold text-gray-900 mb-4">Quick Links</h4>
               <div className="space-y-2 text-sm">
                 <Link href="/" className="block text-gray-600 hover:text-[#E11D48] transition-colors cursor-pointer">Home</Link>
-                <Link href="/pricing" className="block text-gray-600 hover:text-[#E11D48] transition-colors cursor-pointer">Pricing</Link>
+                <Link href="/donate" className="block text-gray-600 hover:text-[#E11D48] transition-colors cursor-pointer">Donate</Link>
+                <Link href="/pricing" className="block text-gray-600 hover:text-[#E11D48] transition-colors cursor-pointer">How It Works</Link>
                 <Link href="/leaderboard" className="block text-gray-600 hover:text-[#E11D48] transition-colors cursor-pointer">Leaderboard</Link>
                 <Link href="/contact" className="block text-gray-600 hover:text-[#E11D48] transition-colors cursor-pointer">Contact Us</Link>
               </div>

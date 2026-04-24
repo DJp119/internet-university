@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Trophy, Medal, Award } from 'lucide-react';
+import { ArrowLeft, Trophy, Medal, Award, Heart } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { track } from '@vercel/analytics';
 import AdBanner from '@/components/ads/AdBanner';
@@ -83,10 +83,16 @@ export default function LeaderboardPage() {
       {/* Header */}
       <header className="border-b border-gray-100 sticky top-0 bg-white/95 backdrop-blur-xl z-10">
         <div className="max-w-5xl mx-auto px-4 py-3">
-          <Link href="/" className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors">
-            <ArrowLeft size={20} />
-            <span className="text-sm">Back</span>
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link href="/" className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors">
+              <ArrowLeft size={20} />
+              <span className="text-sm">Home</span>
+            </Link>
+            <Link href="/donate" className="flex items-center gap-2 text-gray-600 hover:text-[#E11D48] transition-colors">
+              <Heart size={16} />
+              <span className="text-sm">Donate</span>
+            </Link>
+          </div>
         </div>
       </header>
 

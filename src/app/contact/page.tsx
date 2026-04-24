@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Home, Mail, Phone, MapPin, User } from 'lucide-react';
+import { Home, Mail, Phone, MapPin, User, Heart } from 'lucide-react';
 import AdBanner from '@/components/ads/AdBanner';
 
 export default function ContactPage() {
@@ -105,6 +105,10 @@ export default function ContactPage() {
                   <Home size={20} />
                   <span className="font-medium">Home</span>
                 </Link>
+                <Link href="/donate" className="flex items-center gap-3 text-gray-700 hover:text-indigo-600 transition-colors p-3 rounded-xl hover:bg-indigo-50">
+                  <Heart size={20} className="text-[#E11D48]" />
+                  <span className="font-medium">Donate</span>
+                </Link>
                 <Link href="/leaderboard" className="flex items-center gap-3 text-gray-700 hover:text-indigo-600 transition-colors p-3 rounded-xl hover:bg-indigo-50">
                   <span className="text-xl">🏆</span>
                   <span className="font-medium">Leaderboard</span>
@@ -171,6 +175,7 @@ export default function ContactPage() {
               <h4 className="font-bold text-gray-900 mb-4">Quick Links</h4>
               <div className="space-y-2 text-sm">
                 <Link href="/" className="block text-gray-600 hover:text-indigo-600">Home</Link>
+                <Link href="/donate" className="block text-gray-600 hover:text-indigo-600">Donate</Link>
                 <Link href="/leaderboard" className="block text-gray-600 hover:text-indigo-600">Leaderboard</Link>
                 <Link href="/contact" className="block text-gray-600 hover:text-indigo-600">Contact Us</Link>
               </div>

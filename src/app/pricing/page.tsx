@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Check, Sparkles, Zap, Gift, Shield, Clock, TrendingUp, Star, Users, Award, Globe } from 'lucide-react';
+import { Check, Sparkles, Zap, Gift, Shield, Clock, TrendingUp, Star, Users, Award, Globe, Heart } from 'lucide-react';
 import { track } from '@vercel/analytics';
 import { useEffect, useState } from 'react';
 
@@ -101,12 +101,21 @@ export default function PricingPage() {
                 <p className="text-xs text-gray-500">Est. 2026</p>
               </div>
             </Link>
-            <Link
-              href="/"
-              className="text-sm font-medium text-gray-600 hover:text-[#E11D48] transition-colors cursor-pointer"
-            >
-              Back to Home
-            </Link>
+            <div className="flex items-center gap-3">
+              <Link
+                href="/donate"
+                className="text-sm font-medium text-gray-600 hover:text-[#E11D48] transition-colors cursor-pointer flex items-center gap-1"
+              >
+                <Heart size={14} />
+                <span className="hidden sm:inline">Donate</span>
+              </Link>
+              <Link
+                href="/"
+                className="text-sm font-medium text-gray-600 hover:text-[#E11D48] transition-colors cursor-pointer"
+              >
+                Home
+              </Link>
+            </div>
           </div>
         </div>
       </header>
@@ -278,6 +287,10 @@ export default function PricingPage() {
           <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-gray-600">
             <Link href="/" className="hover:text-[#E11D48] transition-colors cursor-pointer font-medium">
               Home
+            </Link>
+            <span className="text-gray-300">•</span>
+            <Link href="/donate" className="hover:text-[#E11D48] transition-colors cursor-pointer">
+              Donate
             </Link>
             <span className="text-gray-300">•</span>
             <Link href="/leaderboard" className="hover:text-[#E11D48] transition-colors cursor-pointer">

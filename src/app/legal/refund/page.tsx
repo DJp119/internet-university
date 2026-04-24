@@ -285,6 +285,10 @@ export default function RefundPage() {
               Home
             </Link>
             <span className="text-gray-300">•</span>
+            <Link href="/donate" className="hover:text-[#E11D48] transition-colors cursor-pointer">
+              Donate
+            </Link>
+            <span className="text-gray-300">•</span>
             <Link href="/pricing" className="hover:text-[#E11D48] transition-colors cursor-pointer">
               How It Works
             </Link>
