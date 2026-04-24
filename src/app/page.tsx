@@ -436,7 +436,7 @@ export default function Home() {
             </div>
 
             {/* Contact Info */}
-            <div>
+            {/* <div>
               <h4 className="font-bold text-gray-900 mb-4">Contact</h4>
               <p className="text-sm text-gray-600 mb-2">DARSHAN JATINKUMAR PATEL</p>
               <p className="text-sm text-gray-500 mb-2">
@@ -449,7 +449,7 @@ export default function Home() {
               <p className="text-sm text-gray-500">
                 <a href="tel:+916355549958" className="hover:text-[#E11D48] transition-colors">+91 63555 49958</a>
               </p>
-            </div>
+            </div> */}
 
             {/* Quick Links */}
             <div>
