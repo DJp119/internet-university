@@ -151,7 +151,7 @@ const sections = [
     content: [
       {
         heading: 'Privacy Contact Information',
-        text: 'For privacy-related questions, please contact us at djpatel2003119@gmail.com or write to us at C1, Devcity Bunglows, Ghatlodiya, Ahmedabad, Gujarat 380061, India.',
+        text: 'For privacy-related questions, please contact us at internetuni@example.com.',
       },
     ],
   },

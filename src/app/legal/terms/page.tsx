@@ -85,7 +85,7 @@ const sections = [
   {
     icon: UserCheck,
     title: '12. Contact Information',
-    content: `For questions about these Terms of Service, please contact us at djpatel2003119@gmail.com or +91 63555 49958. We will respond to inquiries within a reasonable timeframe.`,
+    content: `For questions about these Terms of Service, please contact us at darshan2003911@gmail.com We will respond to inquiries within a reasonable timeframe.`,
     color: 'from-pink-500 to-rose-500',
   },
 ];

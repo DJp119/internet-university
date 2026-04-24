@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Home, Mail, Phone, MapPin, User, Heart } from 'lucide-react';
+import { Home, Mail, Globe, Heart } from 'lucide-react';
 import AdBanner from '@/components/ads/AdBanner';
 
 export default function ContactPage() {
@@ -36,36 +36,9 @@ export default function ContactPage() {
           {/* Contact Information Card */}
           <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-8 slide-up">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">
-              Contact Information
+              Get In Touch
             </h2>
             <div className="space-y-6">
-              {/* Legal Name */}
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg">
-                  <User className="text-white" size={20} />
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Legal Name</p>
-                  <p className="text-gray-900 font-bold">DARSHAN JATINKUMAR PATEL</p>
-                </div>
-              </div>
-
-              {/* Address */}
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg">
-                  <MapPin className="text-white" size={20} />
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Address</p>
-                  <p className="text-gray-900">
-                    C1, Devcity Bunglows, Near Sayona city,<br />
-                    R. C. Technical Road, Near Prasang Party Plot Rd,<br />
-                    Ghatlodiya, Ahmedabad, 380061,<br />
-                    Gujarat, India
-                  </p>
-                </div>
-              </div>
-
               {/* Email */}
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg">
@@ -73,23 +46,30 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Email</p>
-                  <a href="mailto:djpatel2003119@gmail.com" className="text-indigo-600 hover:underline font-medium">
-                    djpatel2003119@gmail.com
+                  <a href="mailto:internetuni@example.com" className="text-indigo-600 hover:underline font-medium">
+                    internetuni@example.com
                   </a>
                 </div>
               </div>
 
-              {/* Phone */}
+              {/* Website */}
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg">
-                  <Phone className="text-white" size={20} />
+                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg">
+                  <Globe className="text-white" size={20} />
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Phone</p>
-                  <a href="tel:+916355549958" className="text-indigo-600 hover:underline font-medium">
-                    +91 63555 49958
+                  <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Website</p>
+                  <a href="https://internetuni.netlify.app" className="text-indigo-600 hover:underline font-medium">
+                    internetuni.netlify.app
                   </a>
                 </div>
+              </div>
+
+              {/* Response Time */}
+              <div className="bg-indigo-50 rounded-xl p-4 mt-6">
+                <p className="text-sm text-indigo-700 font-medium">
+                  📧 We typically respond within 24-48 hours
+                </p>
               </div>
             </div>
           </div>
@@ -157,16 +137,11 @@ export default function ContactPage() {
             {/* Contact Info */}
             <div>
               <h4 className="font-bold text-gray-900 mb-4">Contact</h4>
-              <p className="text-sm text-gray-600 mb-2">DARSHAN JATINKUMAR PATEL</p>
               <p className="text-sm text-gray-500 mb-2">
-                C1, Devcity Bunglows, Ghatlodiya,<br />
-                Ahmedabad, Gujarat 380061, India
+                Ahmedabad, Gujarat, India
               </p>
               <p className="text-sm text-gray-500">
-                <a href="mailto:djpatel2003119@gmail.com" className="hover:text-indigo-600">djpatel2003119@gmail.com</a>
-              </p>
-              <p className="text-sm text-gray-500">
-                <a href="tel:+916355549958" className="hover:text-indigo-600">+91 63555 49958</a>
+                <a href="mailto:internetuni@example.com" className="hover:text-indigo-600">internetuni@example.com</a>
               </p>
             </div>
 

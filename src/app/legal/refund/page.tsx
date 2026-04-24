@@ -33,7 +33,7 @@ const processSteps = [
   {
     step: '1',
     title: 'Contact Us',
-    desc: 'Email us at djpatel2003119@gmail.com with your issue and we will get back to you.',
+    desc: 'Email us at darshan2003911@gmail.com with your issue and we will get back to you.',
     icon: Mail,
     color: 'from-[#E11D48] to-[#FB7185]',
   },
@@ -268,7 +268,7 @@ export default function RefundPage() {
             We typically respond within 24 hours.
           </p>
           <a
-            href="mailto:djpatel2003119@gmail.com"
+            href="mailto:darshan2003911@gmail.com"
             className="inline-flex items-center gap-2 bg-white text-[#E11D48] px-8 py-4 rounded-full text-lg font-black shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 cursor-pointer"
           >
             Email Us

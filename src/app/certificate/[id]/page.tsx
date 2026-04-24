@@ -356,16 +356,11 @@ export default function CertificatePage() {
             {/* Contact Info */}
             <div>
               <h4 className="font-bold text-gray-900 mb-4">Contact</h4>
-              <p className="text-sm text-gray-600 mb-2">DARSHAN JATINKUMAR PATEL</p>
               <p className="text-sm text-gray-500 mb-2">
-                C1, Devcity Bunglows, Ghatlodiya,<br />
-                Ahmedabad, Gujarat 380061, India
+                Ahmedabad, Gujarat, India
               </p>
               <p className="text-sm text-gray-500">
-                <a href="mailto:djpatel2003119@gmail.com" className="hover:text-indigo-600">djpatel2003119@gmail.com</a>
-              </p>
-              <p className="text-sm text-gray-500">
-                <a href="tel:+916355549958" className="hover:text-indigo-600">+91 63555 49958</a>
+                <a href="mailto:internetuni@example.com" className="hover:text-indigo-600">internetuni@example.com</a>
               </p>
             </div>
 
