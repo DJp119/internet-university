@@ -1,43 +1,92 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Heart, Coffee, Sparkles, Gift, TrendingUp, Users, Award } from 'lucide-react';
+import { useParams, useRouter } from 'next/navigation';
+import {
+  ArrowLeft,
+  Heart,
+  Coffee,
+  Sparkles,
+  Gift,
+  TrendingUp,
+  Users,
+  Award,
+  CheckCircle,
+  AlertCircle,
+} from 'lucide-react';
 import { track } from '@vercel/analytics';
-import { useEffect, useState, Suspense } from 'react';
-import AdBanner from '@/components/ads/AdBanner';
 import { storeReferralCode, trackReferralClick, generateVisitorId } from '@/lib/referrals';
+import { supabase } from '@/lib/supabase';
+import AdBanner from '@/components/ads/AdBanner';
 
-function DonateContent() {
+export default function AffiliateLandingPage() {
+  const params = useParams();
+  const router = useRouter();
+  const referralCode = params.code as string;
+
+  const [affiliate, setAffiliate] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
-  const [referralStored, setReferralStored] = useState(false);
-  const [refParam, setRefParam] = useState<string | null>(null);
 
   useEffect(() => {
-    track('page_viewed', { page: 'donate' });
+    async function loadAffiliate() {
+      try {
+        const { data, error } = await supabase
+          .from('affiliates')
+          .select('*')
+          .eq('referral_code', referralCode)
+          .eq('is_approved', true)
+          .single();
 
-    // Get referral code from URL
-    const params = new URLSearchParams(window.location.search);
-    const ref = params.get('ref');
-    if (ref && !referralStored) {
-      storeReferralCode(ref);
-      setRefParam(ref);
-      setReferralStored(true);
+        if (error || !data) {
+          router.push('/affiliate/signup');
+          return;
+        }
 
-      // Track the click
-      const visitorId = generateVisitorId();
-      trackReferralClick({
-        referralCode: ref,
-        visitorId,
-        landingPage: window.location.pathname,
-      }).catch(console.error);
+        setAffiliate(data);
+
+        // Store referral code and track click
+        storeReferralCode(referralCode);
+        const visitorId = generateVisitorId();
+        trackReferralClick({
+          referralCode,
+          visitorId,
+          landingPage: window.location.pathname,
+        }).catch(console.error);
+
+        track('affiliate_landing_viewed', { referralCode, affiliateId: data.id });
+      } catch (error) {
+        console.error('Failed to load affiliate:', error);
+        router.push('/affiliate/signup');
+      } finally {
+        setLoading(false);
+      }
     }
-  }, [referralStored]);
 
-  const handleCopyUPI = () => {
-    navigator.clipboard.writeText('6355549958@slc');
+    loadAffiliate();
+  }, [referralCode, router]);
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(window.location.href);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#FFF1F2] flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-[#E11D48] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 font-medium">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!affiliate) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-[#FFF1F2] overflow-x-hidden">
@@ -73,36 +122,57 @@ function DonateContent() {
 
       {/* Hero Section */}
       <section className="relative max-w-4xl mx-auto px-4 py-16 text-center">
-        <div className="inline-flex items-center gap-2 bg-gradient-to-r from-[#E11D48] to-[#FB7185] text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-xl mb-6">
-          <Heart size={14} className="fill-white animate-pulse" />
-          <span>Support Our Mission</span>
-          <Heart size={14} className="fill-white animate-pulse" />
+        <div className="inline-flex items-center gap-2 bg-white px-5 py-2.5 rounded-full text-sm font-bold shadow-lg border border-[#FECDD3] mb-6">
+          <CheckCircle size={16} className="text-green-600" />
+          <span>Verified Partner</span>
         </div>
 
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-gray-900 mb-6 leading-tight">
-          Keep the Fun{' '}
+          Support Internet University via{' '}
           <span className="bg-gradient-to-r from-[#E11D48] via-[#FB7185] to-[#2563EB] bg-clip-text text-transparent animate-gradient">
-            Going
+            {affiliate.name}
           </span>
         </h1>
         <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-          Internet University is 100% free for everyone. If you&apos;ve enjoyed your degree, consider supporting us to keep the servers running and the memes flowing!
+          Your donation helps keep Internet University 100% free for everyone.
+          This link supports our partner {affiliate.name} who helps spread the word!
         </p>
+      </section>
 
-        {/* Trust badges */}
-        <div className="flex flex-wrap items-center justify-center gap-4 mt-8">
-          <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-md border border-[#FECDD3]">
-            <Coffee size={16} className="text-[#E11D48]" />
-            <span className="text-sm font-medium text-gray-700">Buy Us a Chai</span>
-          </div>
-          <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-md border border-[#FECDD3]">
-            <Sparkles size={16} className="text-yellow-600" />
-            <span className="text-sm font-medium text-gray-700">100% Voluntary</span>
-          </div>
-          <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-md border border-[#FECDD3]">
-            <Gift size={16} className="text-pink-600" />
-            <span className="text-sm font-medium text-gray-700">Every Bit Helps</span>
-          </div>
+      {/* Trust Badges */}
+      <section className="relative max-w-6xl mx-auto px-4 pb-16">
+        <div className="grid sm:grid-cols-3 gap-4">
+          {[
+            {
+              icon: Heart,
+              title: '100% Free Service',
+              desc: 'All degrees remain free forever',
+              color: 'from-green-500 to-emerald-600',
+            },
+            {
+              icon: Sparkles,
+              title: 'Secure Donation',
+              desc: 'Powered by Ko-fi & UPI',
+              color: 'from-blue-500 to-cyan-600',
+            },
+            {
+              icon: Award,
+              title: 'Partner Supported',
+              desc: `Supported by ${affiliate.name}`,
+              color: 'from-purple-500 to-pink-600',
+            },
+          ].map((item, idx) => (
+            <div
+              key={idx}
+              className="bg-white rounded-2xl p-6 shadow-lg border border-[#FECDD3] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-center"
+            >
+              <div className={`w-14 h-14 bg-gradient-to-br ${item.color} rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg`}>
+                <item.icon className="text-white" size={28} />
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">{item.title}</h3>
+              <p className="text-sm text-gray-600">{item.desc}</p>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -118,7 +188,7 @@ function DonateContent() {
                 </div>
                 <div>
                   <h3 className="text-xl font-black text-gray-900">Buy Us a Coffee</h3>
-                  <p className="text-sm text-gray-600">Support us via Ko-fi</p>
+                  <p className="text-sm text-gray-600">Support via Ko-fi</p>
                 </div>
               </div>
             </div>
@@ -169,7 +239,11 @@ function DonateContent() {
                     6355549958@slc
                   </code>
                   <button
-                    onClick={handleCopyUPI}
+                    onClick={() => {
+                      navigator.clipboard.writeText('6355549958@slc');
+                      setCopied(true);
+                      setTimeout(() => setCopied(false), 2000);
+                    }}
                     className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all ${
                       copied
                         ? 'bg-green-500 text-white'
@@ -205,85 +279,51 @@ function DonateContent() {
         </div>
       </section>
 
-      {/* Why Donate Section */}
+      {/* Partner Info */}
       <section className="relative max-w-4xl mx-auto px-4 pb-16">
-        <div className="text-center mb-10">
-          <h2 className="text-3xl sm:text-4xl font-black text-gray-900 mb-3">
-            Why Support Us?
+        <div className="bg-gradient-to-br from-[#E11D48] via-[#FB7185] to-[#2563EB] rounded-[2.5rem] p-10 text-white shadow-2xl text-center">
+          <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-6">
+            <Users className="text-white" size={40} />
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-black mb-4">
+            About This Partner
           </h2>
-          <p className="text-gray-600 text-lg">Your donations make a real difference</p>
-        </div>
-
-        <div className="grid sm:grid-cols-3 gap-6">
-          {[
-            {
-              icon: Users,
-              title: 'Keep It Free',
-              desc: 'Your support helps us keep all degrees 100% free for everyone, forever.',
-              color: 'from-green-500 to-emerald-600',
-            },
-            {
-              icon: TrendingUp,
-              title: 'Server Costs',
-              desc: 'Donations cover hosting, domain, and infrastructure costs to keep us online.',
-              color: 'from-blue-500 to-cyan-600',
-            },
-            {
-              icon: Award,
-              title: 'New Features',
-              desc: 'Help us build new degrees, features, and more fun ways to procrastinate.',
-              color: 'from-purple-500 to-indigo-600',
-            },
-          ].map((item, idx) => (
-            <div
-              key={idx}
-              className="bg-white rounded-2xl p-6 shadow-lg border border-[#FECDD3] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-center"
-              style={{ animationDelay: `${idx * 50}ms` }}
-            >
-              <div className={`w-14 h-14 bg-gradient-to-br ${item.color} rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg`}>
-                <item.icon className="text-white" size={28} />
-              </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-2">{item.title}</h3>
-              <p className="text-sm text-gray-600">{item.desc}</p>
+          <p className="text-white/90 text-lg mb-6 max-w-xl mx-auto">
+            {affiliate.name} is helping Internet University reach more people.
+            When you donate through their link, they earn a commission to support their efforts!
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">
+              <Gift size={18} />
+              <span className="font-semibold">Earns 10-25% Commission</span>
             </div>
-          ))}
+            <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">
+              <TrendingUp size={18} />
+              <span className="font-semibold">Verified Partner</span>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Thank You Section */}
+      {/* Become Affiliate CTA */}
       <section className="relative max-w-4xl mx-auto px-4 pb-16">
-        <div className="relative bg-gradient-to-br from-[#E11D48] via-[#FB7185] to-[#2563EB] rounded-[2.5rem] p-12 text-center text-white overflow-hidden shadow-2xl">
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-10 left-10 text-6xl animate-bounce">❤️</div>
-            <div className="absolute top-20 right-20 text-4xl animate-bounce delay-100">🙏</div>
-            <div className="absolute bottom-10 left-20 text-5xl animate-bounce delay-200">✨</div>
+        <div className="bg-white rounded-[2.5rem] p-10 text-center shadow-2xl border-2 border-[#FECDD3]">
+          <div className="w-20 h-20 bg-gradient-to-br from-[#E11D48] to-[#FB7185] rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+            <Heart className="text-white" size={40} />
           </div>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-
-          <div className="relative">
-            <div className="text-7xl mb-6 animate-bounce">🎓</div>
-            <h2 className="text-2xl sm:text-3xl font-black mb-4">
-              Thank You for Your Support!
-            </h2>
-            <p className="text-white/90 text-lg mb-8 max-w-xl mx-auto">
-              Every donation, no matter how small, helps us keep Internet University running.
-              You&apos;re helping thousands of people get their well-deserved internet degrees!
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-3">
-              <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">
-                <Heart size={18} className="fill-white" />
-                <span className="font-semibold">Made with Love</span>
-              </div>
-              <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">
-                <Coffee size={18} />
-                <span className="font-semibold">Powered by Chai</span>
-              </div>
-              <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">
-                <Sparkles size={18} />
-                <span className="font-semibold">100% Free Forever</span>
-              </div>
-            </div>
-          </div>
+          <h2 className="text-2xl sm:text-3xl font-black text-gray-900 mb-4">
+            Want to Become a Partner Too?
+          </h2>
+          <p className="text-gray-600 text-lg mb-8 max-w-xl mx-auto">
+            Join our affiliate program and earn commissions while supporting Internet University!
+          </p>
+          <Link
+            href="/affiliate/signup"
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-[#E11D48] to-[#FB7185] text-white px-8 py-4 rounded-full text-lg font-black shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 cursor-pointer"
+          >
+            <Gift size={20} />
+            Join Affiliate Program
+          </Link>
         </div>
       </section>
 
@@ -295,41 +335,23 @@ function DonateContent() {
               Home
             </Link>
             <span className="text-gray-300">•</span>
-            <Link href="/pricing" className="hover:text-[#E11D48] transition-colors cursor-pointer">
-              How It Works
+            <Link href="/donate" className="hover:text-[#E11D48] transition-colors cursor-pointer">
+              Donate
             </Link>
             <span className="text-gray-300">•</span>
-            <Link href="/leaderboard" className="hover:text-[#E11D48] transition-colors cursor-pointer">
-              Leaderboard
+            <Link href="/affiliate/signup" className="hover:text-[#E11D48] transition-colors cursor-pointer">
+              Become an Affiliate
             </Link>
             <span className="text-gray-300">•</span>
-            <Link href="/contact" className="hover:text-[#E11D48] transition-colors cursor-pointer">
-              Contact
+            <Link href="/legal" className="hover:text-[#E11D48] transition-colors cursor-pointer font-medium">
+              Terms & Policies
             </Link>
           </div>
           <p className="text-center text-xs text-gray-500 mt-4">
             © 2026 Internet University. For entertainment purposes only.
           </p>
-          <p className="text-center text-xs text-gray-400 mt-2">
-            This site is supported by ads and generous donors like you. All degrees are 100% free.
-          </p>
         </div>
       </footer>
     </div>
-  );
-}
-
-export default function DonatePage() {
-  return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-[#FFF1F2] flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-[#E11D48] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600 font-medium">Loading...</p>
-        </div>
-      </div>
-    }>
-      <DonateContent />
-    </Suspense>
   );
 }
