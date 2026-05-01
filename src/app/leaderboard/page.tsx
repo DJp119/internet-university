@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { ArrowLeft, Trophy, Medal, Award, Heart } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { track } from '@vercel/analytics';
-import AdBanner from '@/components/ads/AdBanner';
 
 interface LeaderboardEntry {
   rank: number;
@@ -78,6 +77,17 @@ export default function LeaderboardPage() {
     return <span className="text-gray-400 font-bold">{rank}</span>;
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 font-medium">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
@@ -128,14 +138,6 @@ export default function LeaderboardPage() {
               <div className="text-sm text-gray-400">{entry.earnedAt}</div>
             </div>
           ))}
-        </div>
-
-        {/* Ad Placement */}
-        <div className="mt-8 mb-8">
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-4">
-            <p className="text-xs text-gray-400 text-center mb-2">Advertisement</p>
-            <AdBanner slot="6677889900" format="auto" />
-          </div>
         </div>
 
         {/* CTA */}

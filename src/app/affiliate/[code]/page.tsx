@@ -17,6 +17,11 @@ export default function AffiliateLandingPage() {
 
   useEffect(() => {
     async function loadAffiliate() {
+      if (!referralCode) {
+        window.location.href = '/affiliate/signup';
+        return;
+      }
+
       try {
         const { data, error } = await supabase
           .from('affiliates')
