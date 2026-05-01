@@ -39,8 +39,8 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        {/* Google AdSense */}
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7620811634558573" crossOrigin="anonymous" />
+        {/* MyBidadm Ads */}
+        <script async src="https://js.mbidadm.com/static/scripts.js" data-admpid="438990" />
       </head>
       <body className="antialiased">
         {children}

@@ -107,11 +107,11 @@ const sections = [
       },
       {
         heading: 'Third-Party Cookies',
-        text: 'We use Vercel Analytics to understand website usage. We also use Google AdSense to display ads, which may set their own cookies for ad personalization and measurement.',
+        text: 'We use Vercel Analytics to understand website usage. We also use MyBidadm to display ads, which may set their own cookies for ad personalization and measurement.',
       },
       {
         heading: 'Advertising',
-        text: 'We display ads through Google AdSense to keep our services free. Google may use cookies and web beacons to serve relevant ads. You can opt-out of personalized advertising through Google Ads Settings.',
+        text: 'We display ads through MyBidadm to keep our services free. MyBidadm may use cookies and web beacons to serve relevant ads. You can opt-out of personalized advertising by adjusting your browser settings.',
       },
       {
         heading: 'Your Choices',

@@ -3,10 +3,16 @@
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Award, Download, Home, Share2, Heart } from 'lucide-react';
+import { Award, Download, Home, Share2, Heart, Lock } from 'lucide-react';
 import { downloadCertificatePDF, downloadCertificatePNG } from '@/lib/certificate-generator';
 import { track } from '@vercel/analytics';
-import AdBanner from '@/components/ads/AdBanner';
+import Script from 'next/script';
+
+declare global {
+  interface Window {
+    Paddle: any;
+  }
+}
 
 function getDegreeIcon(degreeTitle: string) {
   if (degreeTitle.includes('Abusing')) return '🤬';
@@ -43,6 +49,11 @@ export default function CertificatePage() {
   const [degreeSubtitle, setDegreeSubtitle] = useState('');
   const [isDownloading, setIsDownloading] = useState(false);
   const [gpa, setGpa] = useState('');
+  const [showPaywall, setShowPaywall] = useState(true);
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const PADDLE_PRICE_ID = process.env.NEXT_PUBLIC_PURCHASE_PRICE_ID;
+  const PADDLE_CLIENT_TOKEN = process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN;
 
   useEffect(() => {
     setGpa((3.5 + Math.random() * 0.5).toFixed(2));
@@ -73,6 +84,68 @@ export default function CertificatePage() {
     () => buildShareLinks({ degreeTitle, shareUrl }),
     [degreeTitle, shareUrl]
   );
+
+  // Initialize Paddle
+  useEffect(() => {
+    if (typeof window !== 'undefined' && PADDLE_CLIENT_TOKEN) {
+      const loadPaddle = async () => {
+        if (!window.Paddle) {
+          const script = document.createElement('script');
+          script.src = 'https://cdn.paddle.com/paddle/v2/paddle.js';
+          script.onload = async () => {
+            if (window.Paddle) {
+              window.Paddle.Environment.set('production');
+              window.Paddle.Initialize({
+                token: PADDLE_CLIENT_TOKEN,
+              });
+            }
+          };
+          document.head.appendChild(script);
+        }
+      };
+      loadPaddle();
+    }
+  }, [PADDLE_CLIENT_TOKEN]);
+
+  const handlePayment = async () => {
+    if (!PADDLE_PRICE_ID || !window.Paddle) {
+      alert('Payment system not configured. Please contact the administrator.');
+      return;
+    }
+
+    setIsProcessing(true);
+
+    try {
+      // Open Paddle checkout
+      window.Paddle.Checkout.open({
+        items: [
+          {
+            priceId: PADDLE_PRICE_ID,
+            quantity: 1,
+          },
+        ],
+        customer: {
+          email: 'customer@example.com',
+        },
+        callback: {
+          paid: async (data: any) => {
+            console.log('Payment successful:', data);
+            track('certificate_purchased', {
+              certificateId: certificateCode,
+              userName,
+              degreeTitle,
+            });
+            setShowPaywall(false);
+            setIsProcessing(false);
+          },
+        },
+      });
+    } catch (error) {
+      console.error('Payment error:', error);
+      alert('Payment failed. Please try again.');
+      setIsProcessing(false);
+    }
+  };
 
   const handleDownload = async (type: 'png' | 'pdf') => {
     if (!certificateRef.current) return;
@@ -113,6 +186,22 @@ export default function CertificatePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50 py-8">
+      {/* Paddle Script */}
+      {PADDLE_CLIENT_TOKEN && (
+        <Script
+          src="https://cdn.paddle.com/paddle/v2/paddle.js"
+          strategy="beforeInteractive"
+          onLoad={() => {
+            if (window.Paddle) {
+              window.Paddle.Environment.set('production');
+              window.Paddle.Initialize({
+                token: PADDLE_CLIENT_TOKEN,
+              });
+            }
+          }}
+        />
+      )}
+
       <header className="max-w-5xl mx-auto px-4 mb-6">
         <div className="flex items-center gap-4">
           <Link href="/" className="inline-flex items-center gap-2 text-gray-600 hover:text-indigo-600 transition-colors">
@@ -251,32 +340,72 @@ export default function CertificatePage() {
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-4 justify-center mb-10 slide-up" style={{ animationDelay: '200ms' }}>
-          <button
-            onClick={() => handleDownload('png')}
-            disabled={isDownloading}
-            className="flex items-center gap-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:from-indigo-700 hover:to-purple-700 transition-all shadow-xl hover:shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <Download size={22} />
-            {isDownloading ? 'Generating...' : 'Download PNG'}
-          </button>
-          <button
-            onClick={() => handleDownload('pdf')}
-            disabled={isDownloading}
-            className="flex items-center gap-3 bg-gradient-to-r from-gray-800 to-gray-900 text-white px-8 py-4 rounded-full font-bold text-lg hover:from-gray-900 hover:to-black transition-all shadow-xl hover:shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <Download size={22} />
-            {isDownloading ? 'Generating...' : 'Download PDF'}
-          </button>
-        </div>
-
-        {/* Ad Placement - Below Download Buttons */}
-        <div className="mb-10 slide-up" style={{ animationDelay: '250ms' }}>
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-4">
-            <p className="text-xs text-gray-400 text-center mb-2">Advertisement</p>
-            <AdBanner slot="5544332211" format="auto" />
+        {/* Paywall Overlay */}
+        {showPaywall && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-3xl max-w-lg w-full p-8 text-center shadow-2xl">
+              <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full mx-auto mb-6 flex items-center justify-center shadow-xl">
+                <Lock className="text-white" size={40} />
+              </div>
+              <h2 className="text-3xl font-black text-gray-900 mb-4">
+                Unlock Your Certificate
+              </h2>
+              <p className="text-gray-600 mb-6 text-lg">
+                Your official certificate is ready! Download it in high-quality PNG or PDF format for just $1.
+              </p>
+              <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-6 mb-6">
+                <div className="text-5xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2">
+                  $1.00
+                </div>
+                <p className="text-sm text-gray-600">One-time payment • Lifetime access</p>
+              </div>
+              <ul className="text-left space-y-3 mb-8">
+                {[
+                  'High-quality PNG & PDF downloads',
+                  'Official certificate with your name',
+                  'Shareable on social media',
+                  'Lifetime validity',
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-3">
+                    <span className="text-green-500 font-bold">✓</span>
+                    <span className="text-gray-700">{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <button
+                onClick={handlePayment}
+                disabled={isProcessing}
+                className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:from-indigo-700 hover:to-purple-700 transition-all shadow-xl hover:shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isProcessing ? 'Processing...' : 'Pay $1 & Download'}
+              </button>
+              <p className="text-xs text-gray-400 mt-4">
+                Secure payment powered by Paddle
+              </p>
+            </div>
           </div>
-        </div>
+        )}
+
+        {!showPaywall && (
+          <div className="flex flex-wrap gap-4 justify-center mb-10 slide-up" style={{ animationDelay: '200ms' }}>
+            <button
+              onClick={() => handleDownload('png')}
+              disabled={isDownloading}
+              className="flex items-center gap-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:from-indigo-700 hover:to-purple-700 transition-all shadow-xl hover:shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Download size={22} />
+              {isDownloading ? 'Generating...' : 'Download PNG'}
+            </button>
+            <button
+              onClick={() => handleDownload('pdf')}
+              disabled={isDownloading}
+              className="flex items-center gap-3 bg-gradient-to-r from-gray-800 to-gray-900 text-white px-8 py-4 rounded-full font-bold text-lg hover:from-gray-900 hover:to-black transition-all shadow-xl hover:shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Download size={22} />
+              {isDownloading ? 'Generating...' : 'Download PDF'}
+            </button>
+          </div>
+        )}
 
         <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-8 slide-up" style={{ animationDelay: '300ms' }}>
           <div className="text-center mb-6">

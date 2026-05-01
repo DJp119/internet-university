@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { ArrowLeft, Heart, Coffee, Sparkles, Gift, TrendingUp, Users, Award } from 'lucide-react';
 import { track } from '@vercel/analytics';
 import { useEffect, useState, Suspense } from 'react';
-import AdBanner from '@/components/ads/AdBanner';
 import { storeReferralCode, trackReferralClick, generateVisitorId } from '@/lib/referrals';
 
 function DonateContent() {
@@ -195,14 +194,6 @@ function DonateContent() {
             </div>
           </div>
         </div>
-
-        {/* Ad Placement */}
-        <div className="mt-8">
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-4">
-            <p className="text-xs text-gray-400 text-center mb-2">Advertisement</p>
-            <AdBanner slot="1122334455" format="auto" />
-          </div>
-        </div>
       </section>
 
       {/* Why Donate Section */}
@@ -309,9 +300,6 @@ function DonateContent() {
           </div>
           <p className="text-center text-xs text-gray-500 mt-4">
             © 2026 Internet University. For entertainment purposes only.
-          </p>
-          <p className="text-center text-xs text-gray-400 mt-2">
-            This site is supported by ads and generous donors like you. All degrees are 100% free.
           </p>
         </div>
       </footer>

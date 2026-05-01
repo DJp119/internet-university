@@ -13,7 +13,7 @@ export default function AffiliateSignupPage() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    upiId: '',
+    paymentMethod: '', // PayPal, Bank Transfer, etc.
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -33,7 +33,7 @@ export default function AffiliateSignupPage() {
         .from('affiliates')
         .select('id')
         .eq('referral_code', referralCode)
-        .single();
+        .maybeSingle();
 
       let finalCode = referralCode;
       if (existing.data) {
@@ -46,7 +46,7 @@ export default function AffiliateSignupPage() {
         .insert({
           name: formData.name,
           email: formData.email,
-          upi_id: formData.upiId,
+          upi_id: formData.paymentMethod, // Store payment info (PayPal, Bank, etc.)
           referral_code: finalCode,
           is_approved: true, // Auto-approve for now
         })
@@ -68,7 +68,8 @@ export default function AffiliateSignupPage() {
         router.push('/affiliate/dashboard');
       }, 2000);
     } catch (err: any) {
-      setError(err.message || 'Failed to create affiliate account');
+      console.error('Signup error:', err);
+      setError(err.message || 'Failed to create affiliate account. Please make sure the database tables are set up.');
     } finally {
       setIsSubmitting(false);
     }
@@ -235,23 +236,23 @@ export default function AffiliateSignupPage() {
                   />
                 </div>
 
-                {/* UPI ID */}
+                {/* Payment Method */}
                 <div>
-                  <label htmlFor="upiId" className="block text-sm font-bold text-gray-900 mb-2">
-                    UPI ID (for payouts)
+                  <label htmlFor="paymentMethod" className="block text-sm font-bold text-gray-900 mb-2">
+                    Payment Method (PayPal, Bank Transfer, etc.)
                   </label>
                   <input
                     type="text"
-                    id="upiId"
-                    name="upiId"
+                    id="paymentMethod"
+                    name="paymentMethod"
                     required
-                    value={formData.upiId}
+                    value={formData.paymentMethod}
                     onChange={handleChange}
                     className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E11D48] focus:ring-2 focus:ring-[#E11D48]/20 outline-none transition-all"
-                    placeholder="yourname@upi"
+                    placeholder="e.g., paypal@example.com or Bank Account Details"
                   />
                   <p className="text-xs text-gray-500 mt-1">
-                    Your earnings will be sent to this UPI ID
+                    Your earnings will be sent via this method (configured later)
                   </p>
                 </div>
 
@@ -296,10 +297,10 @@ export default function AffiliateSignupPage() {
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {[
-            { tier: 'Bronze', amount: '₹0 - ₹5,000', rate: '10%', color: 'from-amber-600 to-amber-800' },
-            { tier: 'Silver', amount: '₹5,001 - ₹20,000', rate: '15%', color: 'from-gray-400 to-gray-600' },
-            { tier: 'Gold', amount: '₹20,001 - ₹50,000', rate: '20%', color: 'from-yellow-500 to-yellow-700' },
-            { tier: 'Platinum', amount: '₹50,000+', rate: '25%', color: 'from-purple-400 to-purple-600' },
+            { tier: 'Bronze', amount: '₹0 - ₹5,000', amountUsd: '$0 - $60', rate: '10%', color: 'from-amber-600 to-amber-800' },
+            { tier: 'Silver', amount: '₹5,001 - ₹20,000', amountUsd: '$60 - $240', rate: '15%', color: 'from-gray-400 to-gray-600' },
+            { tier: 'Gold', amount: '₹20,001 - ₹50,000', amountUsd: '$240 - $600', rate: '20%', color: 'from-yellow-500 to-yellow-700' },
+            { tier: 'Platinum', amount: '₹50,000+', amountUsd: '$600+', rate: '25%', color: 'from-purple-400 to-purple-600' },
           ].map((tier, idx) => (
             <div
               key={tier.tier}
@@ -309,7 +310,8 @@ export default function AffiliateSignupPage() {
                 <Award className="text-white" size={24} />
               </div>
               <h3 className="text-lg font-black text-gray-900 mb-2">{tier.tier}</h3>
-              <p className="text-sm text-gray-600 mb-3">{tier.amount}</p>
+              <p className="text-sm text-gray-600 mb-1">{tier.amount}</p>
+              <p className="text-xs text-gray-400 mb-3">{tier.amountUsd}</p>
               <p className="text-3xl font-black bg-gradient-to-r from-[#E11D48] to-[#FB7185] bg-clip-text text-transparent">
                 {tier.rate}
               </p>

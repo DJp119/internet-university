@@ -13,14 +13,6 @@ export default function AdBanner({ slot, format = 'auto', className = '' }: AdBa
 
   useEffect(() => {
     setMounted(true);
-
-    // Push ads to Google queue after mount
-    try {
-      (window as any).adsbygoogle = (window as any).adsbygoogle || [];
-      (window as any).adsbygoogle.push({});
-    } catch (err) {
-      console.error('AdSense error:', err);
-    }
   }, []);
 
   if (!mounted) {
@@ -29,16 +21,17 @@ export default function AdBanner({ slot, format = 'auto', className = '' }: AdBa
     );
   }
 
+  // Map slot IDs to MyBidadm banner IDs
+  const bannerIdMap: Record<string, string> = {
+    '1122334455': '2020595',
+    '5544332211': '2020597',
+  };
+
+  const bannerId = bannerIdMap[slot] || slot;
+
   return (
     <div className={`ad-container ${className}`}>
-      <ins
-        className="adsbygoogle"
-        style={{ display: 'block', width: '100%' }}
-        data-ad-client="ca-pub-7620811634558573"
-        data-ad-slot={slot}
-        data-ad-format={format}
-        data-full-width-responsive="true"
-      />
+      <div data-banner-id={bannerId} />
     </div>
   );
 }

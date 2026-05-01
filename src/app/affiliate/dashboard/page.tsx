@@ -11,19 +11,12 @@ import {
   Copy,
   Check,
   Gift,
-  Clock,
-  AlertCircle,
-  ExternalLink,
-  Download,
   Share2,
 } from 'lucide-react';
 import { track } from '@vercel/analytics';
 import {
   getAffiliateStats,
   getAffiliateDonations,
-  getAffiliatePayouts,
-  createPayoutRequest,
-  supabase,
 } from '@/lib/referrals';
 
 export default function AffiliateDashboardPage() {
@@ -33,13 +26,8 @@ export default function AffiliateDashboardPage() {
   const [referralCode, setReferralCode] = useState('');
   const [stats, setStats] = useState<any>(null);
   const [donations, setDonations] = useState<any[]>([]);
-  const [payouts, setPayouts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
-  const [payoutAmount, setPayoutAmount] = useState('');
-  const [upiId, setUpiId] = useState('');
-  const [requestingPayout, setRequestingPayout] = useState(false);
-  const [payoutMessage, setPayoutMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   useEffect(() => {
     // Get affiliate info from localStorage
@@ -60,15 +48,13 @@ export default function AffiliateDashboardPage() {
 
   const loadDashboardData = async (id: string) => {
     try {
-      const [statsData, donationsData, payoutsData] = await Promise.all([
+      const [statsData, donationsData] = await Promise.all([
         getAffiliateStats(id),
         getAffiliateDonations(id),
-        getAffiliatePayouts(id),
       ]);
 
       setStats(statsData);
       setDonations(donationsData);
-      setPayouts(payoutsData);
     } catch (error) {
       console.error('Failed to load dashboard data:', error);
     } finally {
@@ -99,47 +85,6 @@ export default function AffiliateDashboardPage() {
       }
     } else {
       handleCopyLink();
-    }
-  };
-
-  const handlePayoutRequest = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!affiliateId || !payoutAmount || !upiId) return;
-
-    setRequestingPayout(true);
-    setPayoutMessage(null);
-
-    try {
-      const amount = parseFloat(payoutAmount);
-
-      // Validate amount
-      if (amount < 500) {
-        setPayoutMessage({ type: 'error', text: 'Minimum payout amount is ₹500' });
-        setRequestingPayout(false);
-        return;
-      }
-
-      if (amount > (stats?.pending_payout || 0)) {
-        setPayoutMessage({ type: 'error', text: 'Amount exceeds your pending payout' });
-        setRequestingPayout(false);
-        return;
-      }
-
-      await createPayoutRequest({
-        affiliateId,
-        amount,
-        upiId,
-      });
-
-      setPayoutMessage({ type: 'success', text: 'Payout request submitted successfully!' });
-      setPayoutAmount('');
-      setUpiId('');
-      loadDashboardData(affiliateId);
-      track('payout_requested', { amount });
-    } catch (error: any) {
-      setPayoutMessage({ type: 'error', text: error.message || 'Failed to request payout' });
-    } finally {
-      setRequestingPayout(false);
     }
   };
 
@@ -296,77 +241,30 @@ export default function AffiliateDashboardPage() {
           </div>
         </div>
 
-        {/* Payout Request Section */}
-        <div className="bg-white rounded-3xl p-8 shadow-xl border border-[#FECDD3] mb-8">
+        {/* Earnings Info */}
+        <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-3xl p-8 text-white shadow-2xl mb-8">
           <div className="flex items-start gap-4 mb-6">
-            <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
+            <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center flex-shrink-0">
               <DollarSign className="text-white" size={24} />
             </div>
             <div>
-              <h2 className="text-xl font-black text-gray-900 mb-2">Request Payout</h2>
-              <p className="text-gray-600 text-sm">Withdraw your earnings to your UPI ID</p>
+              <h2 className="text-xl font-black mb-2">Your Earnings</h2>
+              <p className="text-white/80 text-sm">Commissions are calculated and tracked automatically</p>
             </div>
           </div>
-
-          <form onSubmit={handlePayoutRequest} className="space-y-4">
-            <div className="grid sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-bold text-gray-900 mb-2">
-                  Amount (₹)
-                </label>
-                <input
-                  type="number"
-                  value={payoutAmount}
-                  onChange={(e) => setPayoutAmount(e.target.value)}
-                  placeholder="Min ₹500"
-                  min="500"
-                  max={stats?.pending_payout}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E11D48] focus:ring-2 focus:ring-[#E11D48]/20 outline-none transition-all"
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  Available: ₹{stats?.pending_payout || 0}
-                </p>
-              </div>
-
-              <div>
-                <label className="block text-sm font-bold text-gray-900 mb-2">
-                  UPI ID
-                </label>
-                <input
-                  type="text"
-                  value={upiId}
-                  onChange={(e) => setUpiId(e.target.value)}
-                  placeholder="yourname@upi"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-[#E11D48] focus:ring-2 focus:ring-[#E11D48]/20 outline-none transition-all"
-                />
-              </div>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4">
+              <p className="text-sm text-white/80 mb-1">Pending Payout</p>
+              <p className="text-2xl font-black">₹{stats?.pending_payout || 0}</p>
             </div>
-
-            {payoutMessage && (
-              <div
-                className={`flex items-center gap-2 px-4 py-3 rounded-xl border ${
-                  payoutMessage.type === 'success'
-                    ? 'text-green-600 bg-green-50 border-green-200'
-                    : 'text-red-600 bg-red-50 border-red-200'
-                }`}
-              >
-                {payoutMessage.type === 'success' ? (
-                  <Check size={18} />
-                ) : (
-                  <AlertCircle size={18} />
-                )}
-                <span className="text-sm">{payoutMessage.text}</span>
-              </div>
-            )}
-
-            <button
-              type="submit"
-              disabled={requestingPayout || !payoutAmount || !upiId}
-              className="w-full sm:w-auto bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {requestingPayout ? 'Processing...' : 'Request Payout'}
-            </button>
-          </form>
+            <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4">
+              <p className="text-sm text-white/80 mb-1">Total Paid Out</p>
+              <p className="text-2xl font-black">₹{stats?.paid_payout || 0}</p>
+            </div>
+          </div>
+          <p className="text-sm text-white/80 mt-4">
+            💡 Payout methods will be configured soon. Your earnings are safely tracked!
+          </p>
         </div>
 
         {/* Recent Donations */}
@@ -430,66 +328,6 @@ export default function AffiliateDashboardPage() {
           )}
         </div>
 
-        {/* Payout History */}
-        <div className="bg-white rounded-3xl p-8 shadow-xl border border-[#FECDD3]">
-          <div className="flex items-start gap-4 mb-6">
-            <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
-              <Clock className="text-white" size={24} />
-            </div>
-            <div>
-              <h2 className="text-xl font-black text-gray-900 mb-2">Payout History</h2>
-              <p className="text-gray-600 text-sm">Your past payout requests</p>
-            </div>
-          </div>
-
-          {payouts.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
-              <Gift className="mx-auto mb-3 opacity-50" size={40} />
-              <p>No payout requests yet</p>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-gray-200">
-                    <th className="text-left py-3 px-4 text-sm font-bold text-gray-600">Date</th>
-                    <th className="text-left py-3 px-4 text-sm font-bold text-gray-600">Amount</th>
-                    <th className="text-left py-3 px-4 text-sm font-bold text-gray-600">UPI ID</th>
-                    <th className="text-left py-3 px-4 text-sm font-bold text-gray-600">Status</th>
-                    <th className="text-left py-3 px-4 text-sm font-bold text-gray-600">Notes</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {payouts.map((payout) => (
-                    <tr key={payout.id} className="border-b border-gray-100 hover:bg-gray-50">
-                      <td className="py-3 px-4 text-sm text-gray-600">
-                        {new Date(payout.requested_at).toLocaleDateString('en-IN')}
-                      </td>
-                      <td className="py-3 px-4 text-sm font-bold text-gray-900">
-                        ₹{payout.amount}
-                      </td>
-                      <td className="py-3 px-4 text-sm text-gray-600 font-mono">
-                        {payout.upi_id}
-                      </td>
-                      <td className="py-3 px-4">
-                        <span
-                          className={`px-3 py-1 rounded-full text-xs font-bold ${getStatusColor(
-                            payout.status
-                          )}`}
-                        >
-                          {payout.status}
-                        </span>
-                      </td>
-                      <td className="py-3 px-4 text-sm text-gray-600">
-                        {payout.notes || '-'}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
       </section>
 
       {/* Footer */}
